@@ -1,0 +1,74 @@
+name: Oura Ring API FinOps
+description: >-
+  Financial operations framework for Oura Ring API integration. The Oura API
+  itself does not charge per-API-call fees; costs are associated with Oura
+  hardware (ring purchase) and Oura Membership subscription, which is required
+  for Gen3 and Oura Ring 4 users to access API data. Developers building on
+  the platform should account for end-user membership costs as a dependency
+  for API data availability.
+specificationVersion: '1.0'
+framework: FOCUS
+costs:
+  - name: Oura Ring Hardware
+    description: >-
+      One-time hardware purchase cost for the Oura Ring device. Required
+      for all users who will be sharing data via the API. Pricing varies
+      by ring generation and finish.
+    type: one-time
+    category: Hardware
+    currency: USD
+    notes: Current pricing available at https://ouraring.com/product
+  - name: Oura Membership
+    description: >-
+      Monthly or annual subscription required for Gen3 and Oura Ring 4
+      users to access their data via the API. Without an active membership,
+      API access is disabled for these ring generations.
+    type: recurring
+    category: Subscription
+    currency: USD
+    billingPeriods:
+      - monthly
+      - annual
+    notes: >-
+      Required for Gen3 and Ring 4 API access. Generation 2 ring users
+      do not require a membership for API access. Pricing available at
+      https://ouraring.com/product
+  - name: API Access Fee
+    description: >-
+      No per-call or volumetric API charges. API access is included with
+      Oura account registration and membership.
+    type: none
+    category: API
+    amount: 0
+    currency: USD
+considerations:
+  - name: User Membership Dependency
+    description: >-
+      Applications must account for the fact that end users need active
+      Oura Memberships (for Gen3/Ring 4) to have API data available.
+      Users without memberships will result in empty or blocked API responses.
+    impact: high
+  - name: Hardware Cost for End Users
+    description: >-
+      All end users of the API-integrated application must own an Oura Ring.
+      The hardware cost is a prerequisite for user data availability.
+    impact: high
+  - name: No Developer Infrastructure Cost
+    description: >-
+      The Oura API does not charge developers for API calls, data volume,
+      or registered OAuth2 applications. Development costs are limited
+      to internal engineering and hosting.
+    impact: low
+optimization:
+  - Use the sandbox environment (https://api.ouraring.com/v2/sandbox/usercollection/)
+    for development and testing to avoid unnecessary production API calls
+  - Implement caching for daily summary data which changes infrequently
+  - Use webhooks for near real-time updates instead of polling to reduce
+    request volume and server load
+references:
+  - name: Oura Product Pricing
+    url: https://ouraring.com/product
+  - name: Oura API Agreement
+    url: https://cloud.ouraring.com/legal/api-agreement
+  - name: Oura Membership Hub
+    url: https://ouraring.com/membership

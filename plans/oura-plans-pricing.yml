@@ -1,0 +1,53 @@
+name: Oura Ring API Plans & Pricing
+description: >-
+  Oura Ring API access is available to developers at no additional per-call
+  charge. Access to the API requires an active Oura membership for Gen3 and
+  Oura Ring 4 users. Generation 2 ring owners retain API access without
+  membership requirements. Developers register an OAuth2 application through
+  the Oura developer portal to obtain client credentials.
+specificationVersion: '0.1'
+plans:
+  - name: Personal Access
+    description: >-
+      Free API access for individual Oura Ring users via personal access
+      tokens or OAuth2. Allows reading of personal health data including
+      sleep, activity, readiness, heart rate, and other biometric metrics.
+    type: free
+    url: https://cloud.ouraring.com/docs/
+    requirements:
+      - Active Oura Ring account
+      - Active Oura Membership (required for Gen3 and Ring 4 users)
+    features:
+      - OAuth2 personal access tokens
+      - Access to all v2 API endpoints
+      - Sleep summaries and stages
+      - Activity and readiness scores
+      - Heart rate time series
+      - Heart rate variability (HRV)
+      - SpO2 data
+      - Body temperature
+      - Workout detection
+      - User tags and sessions
+  - name: Developer Application
+    description: >-
+      OAuth2 application registration for third-party developers building
+      integrations. Registered applications receive a Client ID and Client
+      Secret to facilitate OAuth2 authorization code flow for end-user
+      data access.
+    type: free
+    url: https://cloud.ouraring.com/oauth/applications
+    requirements:
+      - Oura developer portal registration
+      - Agreement to Oura API Terms of Service
+      - OAuth2 application registration
+    features:
+      - OAuth2 authorization code flow
+      - Access to all 8 OAuth2 scopes (email, personal, daily, heartrate, workout, tag, session, spo2)
+      - Sandbox environment for testing
+      - Webhook subscriptions for near real-time data
+      - Access to 50+ health metrics
+notes:
+  - Oura reserves the right to implement rate limiting or other API controls
+  - Gen3 and Oura Ring 4 users without active Oura Membership cannot access API data
+  - Generation 2 ring users are not affected by membership requirements
+  - API usage subject to Oura API Agreement at https://cloud.ouraring.com/legal/api-agreement

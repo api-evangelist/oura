@@ -1,0 +1,80 @@
+aid: oura
+name: Oura Ring
+description: >-
+  Oura Ring is a smart ring health tracking platform that provides a REST API
+  for accessing sleep, activity, readiness, heart rate, daily health scores,
+  and 50+ biometric metrics via OAuth2. Developers can build integrations
+  that allow users to share their Oura Ring data with third-party services,
+  supporting endpoints for sleep stages, workout detection, SpO2, heart rate
+  variability, body temperature, and more. The platform also supports
+  webhooks for near real-time data updates.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+url: https://raw.githubusercontent.com/api-evangelist/oura/refs/heads/main/apis.yml
+created: '2026-06-13'
+modified: '2026-06-13'
+specificationVersion: '0.19'
+tags:
+  - Health
+  - Wearables
+  - Sleep
+  - Fitness
+  - Heart Rate
+  - Readiness
+  - Smart Ring
+  - Biometrics
+apis:
+  - aid: oura:oura-ring-api
+    name: Oura Ring API
+    description: >-
+      REST API v2 for accessing Oura Ring biometric data including sleep
+      summaries, sleep stages, readiness scores, activity summaries, workouts,
+      heart rate time series, heart rate variability, SpO2, body temperature,
+      and user tags. Supports OAuth2 authorization code flow and personal
+      access tokens, with a sandbox environment for testing.
+    image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    humanURL: https://cloud.ouraring.com/docs/
+    baseURL: https://api.ouraring.com/v2
+    tags:
+      - Health
+      - Sleep
+      - Activity
+      - Readiness
+      - Heart Rate
+      - Wearables
+      - Biometrics
+    properties:
+      - type: Documentation
+        url: https://cloud.ouraring.com/docs/
+      - type: Authentication
+        url: https://cloud.ouraring.com/docs/authentication
+      - type: Webhooks
+        url: https://cloud.ouraring.com/docs/webhooks
+common:
+  - type: Website
+    url: https://ouraring.com
+  - type: Developer
+    url: https://ouraring.com/developer
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: GitHubOrg
+    url: https://github.com/oura-health
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/oura
+  - type: Blog
+    url: https://ouraring.com/blog
+  - type: Pricing
+    url: https://ouraring.com/product
+  - type: StatusPage
+    url: https://status.ouraring.com
+  - type: X
+    url: https://twitter.com/ouraring
+  - type: Plans
+    url: plans/oura-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/oura-rate-limits.yml
+  - type: FinOps
+    url: finops/oura-finops.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

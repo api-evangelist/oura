@@ -1,0 +1,52 @@
+name: Oura Ring API Rate Limits
+description: >-
+  Oura Ring API rate limiting details for the v2 REST API. Oura has not
+  published formally documented rate limits in their public documentation,
+  though community observations indicate a general limit of 5,000 requests
+  per 5-minute window. Oura reserves the right to create, modify, and enforce
+  rate limiting structures per their API Agreement.
+specificationVersion: '0.1'
+limits:
+  - name: General Request Limit
+    description: >-
+      Community-observed rate limit for the Oura API v2. Oura has not
+      formally published this limit in their official documentation.
+    scope: application
+    rate:
+      requests: 5000
+      window: 5
+      windowUnit: minutes
+    notes: Not officially documented; based on community observations
+  - name: API V2 Uptime
+    description: >-
+      Oura API v2 maintains approximately 98.4% uptime over a rolling
+      90-day window as reported on their status page.
+    scope: platform
+    uptime:
+      percentage: 98.4
+      window: 90
+      windowUnit: days
+  - name: Webhook Uptime
+    description: >-
+      Oura API webhooks maintain 100% uptime over a rolling 90-day window
+      as reported on their status page.
+    scope: platform
+    uptime:
+      percentage: 100.0
+      window: 90
+      windowUnit: days
+headers:
+  - name: Rate-Limit-Policy
+    description: Not publicly documented by Oura
+    documented: false
+enforcement:
+  - Oura reserves the right to create, modify and enforce rate limiting per their API Agreement
+  - Excessive requests may result in throttling or application suspension
+  - Developers should implement appropriate backoff strategies
+references:
+  - name: Oura API Agreement
+    url: https://cloud.ouraring.com/legal/api-agreement
+  - name: Oura Status Page
+    url: https://status.ouraring.com
+  - name: Oura API Documentation
+    url: https://cloud.ouraring.com/docs/
