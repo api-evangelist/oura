@@ -1,0 +1,7 @@
+{
+  "id": "string",
+  "day": "string",
+  "day_summary": "restored",
+  "recovery_high": 0,
+  "stress_high": 0
+}

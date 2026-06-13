@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicringconfiguration.json",
+  "title": "PublicRingConfiguration",
+  "description": "Ring configuration.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "color": {
+      "$ref": "#/components/schemas/PublicRingColor",
+      "nullable": true,
+      "title": "",
+      "description": "Color of the ring."
+    },
+    "design": {
+      "$ref": "#/components/schemas/PublicRingDesign",
+      "nullable": true,
+      "title": "",
+      "description": "Design of the ring."
+    },
+    "firmware_version": {
+      "type": "string",
+      "nullable": true,
+      "title": "",
+      "description": "Firmware version of the ring."
+    },
+    "hardware_type": {
+      "$ref": "#/components/schemas/PublicRingHardwareType",
+      "nullable": true,
+      "title": "",
+      "description": "Hardware type of the ring."
+    },
+    "set_up_at": {
+      "$ref": "#/components/schemas/UtcDateTime",
+      "nullable": true,
+      "title": "",
+      "description": "UTC timestamp indicating when the ring was set up."
+    },
+    "size": {
+      "type": "integer",
+      "nullable": true,
+      "title": "",
+      "description": "US size of the ring."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicringconfiguration",
+  "x-owner": "connectivity-squad"
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-enhancedtagmodel.json",
+  "title": "EnhancedTagModel",
+  "description": "An EnhancedTagModel maps an ASSATag. An ASSATag in ExtAPIV2 is called a EnhancedTag\nAn EnhancedTagModel will be populated by data from an ASSATag\nThe fields in the EnhancedTagModel map to fields in an ASSATag",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Id"
+    },
+    "tag_type_code": {
+      "type": "string",
+      "nullable": true,
+      "title": "Tag Type Code",
+      "description": "The unique code of the selected tag type, `NULL` for text-only tags, or `custom` for custom tag types."
+    },
+    "start_time": {
+      "$ref": "#/components/schemas/LocalDateTime",
+      "description": "Timestamp of the tag (if no duration) or the start time of the tag (with duration)."
+    },
+    "end_time": {
+      "$ref": "#/components/schemas/LocalDateTime",
+      "nullable": true,
+      "description": "Timestamp of the tag's end for events with duration or `NULL` if there is no duration."
+    },
+    "start_day": {
+      "type": "string",
+      "format": "date",
+      "title": "Start Day",
+      "description": "Day of the tag (if no duration) or the start day of the tag (with duration)."
+    },
+    "end_day": {
+      "type": "string",
+      "format": "date",
+      "nullable": true,
+      "title": "End Day",
+      "description": "Day of the tag's end for events with duration or `NULL` if there is no duration."
+    },
+    "comment": {
+      "type": "string",
+      "nullable": true,
+      "title": "Comment",
+      "description": "Additional freeform text on the tag."
+    },
+    "custom_name": {
+      "type": "string",
+      "nullable": true,
+      "title": "Custom Name",
+      "description": "The name of the tag if the tag_type_code is `custom`."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "start_time",
+    "start_day"
+  ]
+}

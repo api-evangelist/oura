@@ -1,0 +1,11 @@
+{
+  "id": "string",
+  "day": "string",
+  "optimal_bedtime": {
+    "day_tz": 0,
+    "end_offset": 0,
+    "start_offset": 0
+  },
+  "recommendation": "improve_efficiency",
+  "status": "not_enough_nights"
+}

@@ -1,0 +1,6 @@
+{
+  "id": "string",
+  "day": "string",
+  "timestamp": "string",
+  "vo2_max": 0
+}

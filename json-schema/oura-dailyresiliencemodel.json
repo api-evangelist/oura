@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-dailyresiliencemodel.json",
+  "title": "DailyResilienceModel",
+  "description": "Oura DailyResilienceModel schema",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Id"
+    },
+    "day": {
+      "type": "string",
+      "format": "date",
+      "title": "Day",
+      "description": "Day when the resilience record was recorded."
+    },
+    "contributors": {
+      "$ref": "#/components/schemas/ResilienceContributors",
+      "description": "Contributors to the resilience score."
+    },
+    "level": {
+      "$ref": "#/components/schemas/LongTermResilienceLevel",
+      "description": "Resilience level."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "day",
+    "contributors",
+    "level"
+  ]
+}

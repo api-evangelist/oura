@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicsleeptime.json",
+  "title": "PublicSleepTime",
+  "description": "Suggested bedtime for the user.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "Corresponding day for the sleep time."
+    },
+    "optimal_bedtime": {
+      "$ref": "#/components/schemas/PublicSleepTimeWindow",
+      "nullable": true,
+      "title": "",
+      "description": "Optimal bedtime."
+    },
+    "recommendation": {
+      "$ref": "#/components/schemas/PublicSleepTimeRecommendation",
+      "nullable": true,
+      "title": "",
+      "description": "Recommended action for bedtime."
+    },
+    "status": {
+      "$ref": "#/components/schemas/PublicSleepTimeStatus",
+      "nullable": true,
+      "title": "",
+      "description": "Sleep time status; used to inform sleep time recommendation."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "day"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicsleeptime",
+  "x-owner": "sleep-squad"
+}

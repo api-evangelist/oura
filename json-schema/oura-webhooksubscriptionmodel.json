@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-webhooksubscriptionmodel.json",
+  "title": "WebhookSubscriptionModel",
+  "description": "Oura WebhookSubscriptionModel schema",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid4",
+      "title": "Id"
+    },
+    "callback_url": {
+      "type": "string",
+      "title": "Callback Url"
+    },
+    "event_type": {
+      "$ref": "#/components/schemas/WebhookOperation"
+    },
+    "data_type": {
+      "$ref": "#/components/schemas/ExtApiV2DataType"
+    },
+    "expiration_time": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Expiration Time"
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "callback_url",
+    "event_type",
+    "data_type",
+    "expiration_time"
+  ]
+}

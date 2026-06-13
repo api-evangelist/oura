@@ -1,0 +1,7 @@
+{
+  "id": "string",
+  "callback_url": "string",
+  "event_type": "create",
+  "data_type": "tag",
+  "expiration_time": "2024-01-15T08:00:00+00:00"
+}

@@ -1,0 +1,223 @@
+vocabulary:
+  name: Oura Ring API Vocabulary
+  description: >-
+    Domain vocabulary for the Oura Ring health tracking platform API v2,
+    covering biometric data types, health scores, sleep analysis, activity
+    monitoring, and wearable ring configuration.
+  url: https://cloud.ouraring.com/docs/
+  version: '2.0'
+  created: '2026-06-13'
+  modified: '2026-06-13'
+
+terms:
+
+  # Core data domains
+  - term: DailySleep
+    label: Daily Sleep
+    definition: >-
+      Aggregated sleep summary for a single night, including total sleep duration,
+      sleep score, sleep efficiency, and a breakdown of time spent in each sleep
+      stage (deep, REM, light, awake).
+    type: DataType
+    endpoint: /v2/usercollection/daily_sleep
+
+  - term: SleepStages
+    label: Sleep Stages
+    definition: >-
+      Granular time-series of sleep stage classifications recorded during a sleep
+      session: awake, light (N1/N2), deep (N3/SWS), and REM.
+    type: Concept
+
+  - term: DailyReadiness
+    label: Daily Readiness
+    definition: >-
+      A composite score (0–100) summarising how recovered and prepared the user is
+      for physical activity on a given day, derived from sleep, HRV balance,
+      resting heart rate, and body temperature.
+    type: DataType
+    endpoint: /v2/usercollection/daily_readiness
+
+  - term: DailyActivity
+    label: Daily Activity
+    definition: >-
+      Activity summary for a calendar day including active calories, steps, met
+      (metabolic equivalent of task) intervals, and inactivity alerts.
+    type: DataType
+    endpoint: /v2/usercollection/daily_activity
+
+  - term: DailyStress
+    label: Daily Stress
+    definition: >-
+      Daily stress summary derived from heart rate variability and physiological
+      signals, providing stress high, recovery, and activity durations.
+    type: DataType
+    endpoint: /v2/usercollection/daily_stress
+
+  - term: HeartRate
+    label: Heart Rate
+    definition: >-
+      Time-series of heart rate measurements (bpm) captured at intervals
+      throughout the day and night, including resting heart rate periods.
+    type: DataType
+    endpoint: /v2/usercollection/heartrate
+
+  - term: HeartRateVariability
+    label: Heart Rate Variability (HRV)
+    definition: >-
+      Millisecond-level variation between successive heartbeats (RMSSD). A key
+      indicator of autonomic nervous system balance and recovery.
+    type: Concept
+
+  - term: SpO2
+    label: Blood Oxygen Saturation (SpO2)
+    definition: >-
+      Peripheral oxygen saturation measured during sleep via photoplethysmography,
+      expressed as a percentage.
+    type: DataType
+    endpoint: /v2/usercollection/daily_spo2
+
+  - term: VO2Max
+    label: VO2 Max
+    definition: >-
+      Estimated maximal oxygen uptake (mL/kg/min), a measure of cardiorespiratory
+      fitness derived from heart rate and activity data.
+    type: DataType
+    endpoint: /v2/usercollection/vo2_max
+
+  - term: CardiovascularAge
+    label: Cardiovascular Age
+    definition: >-
+      Estimated cardiovascular age based on the user's VO2 Max and demographic
+      data, indicating relative cardiovascular health.
+    type: DataType
+    endpoint: /v2/usercollection/daily_cardiovascular_age
+
+  - term: BodyTemperature
+    label: Body Temperature
+    definition: >-
+      Nightly deviation in skin temperature from the user's personal baseline,
+      used as an indicator of illness, menstrual cycle phase, or recovery.
+    type: Concept
+
+  - term: Workout
+    label: Workout
+    definition: >-
+      A recorded physical activity session with type, intensity, start/end
+      timestamps, and associated heart rate data.
+    type: DataType
+    endpoint: /v2/usercollection/workout
+
+  - term: Session
+    label: Guided Session
+    definition: >-
+      A mindfulness, meditation, breathing, or nap session recorded via the
+      Oura mobile app.
+    type: DataType
+    endpoint: /v2/usercollection/session
+
+  - term: SleepTime
+    label: Sleep Time Recommendation
+    definition: >-
+      Oura's recommended bedtime window and wake-up time based on the user's
+      chronotype and recent sleep patterns.
+    type: DataType
+    endpoint: /v2/usercollection/sleep_time
+
+  - term: RestModePeriod
+    label: Rest Mode Period
+    definition: >-
+      A user-initiated rest mode interval that adjusts activity goals and
+      readiness calculations during recovery from illness or injury.
+    type: DataType
+    endpoint: /v2/usercollection/rest_mode_period
+
+  - term: DailyResilience
+    label: Daily Resilience
+    definition: >-
+      A metric reflecting the user's physiological stress-recovery balance and
+      capacity to handle future stressors, informed by sleep and daytime HRV.
+    type: DataType
+    endpoint: /v2/usercollection/daily_resilience
+
+  - term: EnhancedTag
+    label: Enhanced Tag
+    definition: >-
+      A user-created annotation with a custom label and optional timestamp range,
+      used to correlate lifestyle events with biometric data.
+    type: DataType
+    endpoint: /v2/usercollection/enhanced_tag
+
+  - term: RingConfiguration
+    label: Ring Configuration
+    definition: >-
+      Hardware and firmware metadata for the user's Oura Ring, including
+      generation, color, design, hardware type, and firmware version.
+    type: DataType
+    endpoint: /v2/usercollection/ring_configuration
+
+  - term: PersonalInfo
+    label: Personal Info
+    definition: >-
+      Oura account profile data including age, height, weight, biological sex,
+      and email used for biometric calculations.
+    type: DataType
+    endpoint: /v2/usercollection/personal_info
+
+  - term: WebhookSubscription
+    label: Webhook Subscription
+    definition: >-
+      A registered callback URL that receives near real-time push notifications
+      when new Oura data becomes available for a subscribed data type.
+    type: DataType
+    endpoint: /v2/webhook/subscription
+
+  # Authentication concepts
+  - term: OAuth2
+    label: OAuth 2.0
+    definition: >-
+      Industry-standard authorization protocol used by the Oura API. Supports
+      the Authorization Code flow for user-delegated data access.
+    type: AuthConcept
+
+  - term: PersonalAccessToken
+    label: Personal Access Token
+    definition: >-
+      A static bearer token that was previously available for direct API access.
+      Deprecated as of December 2025; OAuth2 is now required.
+    type: AuthConcept
+
+  # Score / metric concepts
+  - term: ReadinessScore
+    label: Readiness Score
+    definition: >-
+      A 0–100 integer score summarising the user's physical recovery and
+      preparedness, the flagship metric of the Oura Ring platform.
+    type: Metric
+
+  - term: SleepScore
+    label: Sleep Score
+    definition: >-
+      A 0–100 integer score reflecting overall sleep quality based on duration,
+      efficiency, timing, and stage distribution.
+    type: Metric
+
+  - term: ActivityScore
+    label: Activity Score
+    definition: >-
+      A 0–100 integer score reflecting how well the user has met daily movement
+      goals relative to their personal targets.
+    type: Metric
+
+  - term: MET
+    label: Metabolic Equivalent of Task (MET)
+    definition: >-
+      A measure of energy expenditure relative to resting metabolic rate. Oura
+      reports MET values as time-series intervals throughout the day.
+    type: Metric
+
+  - term: Chronotype
+    label: Chronotype
+    definition: >-
+      The user's natural sleep-wake preference (morning vs. evening), inferred
+      from long-term sleep timing data and used to personalise recommendations.
+    type: Concept

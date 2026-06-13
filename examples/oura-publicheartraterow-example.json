@@ -1,0 +1,6 @@
+{
+  "timestamp": "string",
+  "timestamp_unix": 0,
+  "bpm": 0,
+  "source": "awake"
+}

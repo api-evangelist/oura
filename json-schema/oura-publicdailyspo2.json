@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicdailyspo2.json",
+  "title": "PublicDailySpO2",
+  "description": "Daily SpO2 (Oxygen saturation).",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "breathing_disturbance_index": {
+      "type": "integer",
+      "nullable": true,
+      "title": "",
+      "description": "Breathing Disturbance Index (BDI) calculated using detected SpO2 drops from timeseries. Values should be in range [0, 100]"
+    },
+    "day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "Day that the spo2 values belong to."
+    },
+    "spo2_percentage": {
+      "$ref": "#/components/schemas/PublicSpo2AggregatedValues",
+      "nullable": true,
+      "title": "",
+      "description": "The daily SpO2 percentage value aggregates. Sourced from SpO2 percentage timeseries values."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "day"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicdailyspo2",
+  "x-owner": "sleep-squad"
+}

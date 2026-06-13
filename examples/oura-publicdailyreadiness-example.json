@@ -1,0 +1,19 @@
+{
+  "id": "string",
+  "contributors": {
+    "activity_balance": 0,
+    "body_temperature": 0,
+    "hrv_balance": 0,
+    "previous_day_activity": 0,
+    "previous_night": 0,
+    "recovery_index": 0,
+    "resting_heart_rate": 0,
+    "sleep_balance": 0,
+    "sleep_regularity": 0
+  },
+  "day": "string",
+  "score": 0,
+  "temperature_deviation": 0.0,
+  "temperature_trend_deviation": 0.0,
+  "timestamp": "string"
+}

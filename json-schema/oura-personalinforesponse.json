@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-personalinforesponse.json",
+  "title": "PersonalInfoResponse",
+  "description": "Oura PersonalInfoResponse schema",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Id"
+    },
+    "age": {
+      "type": "integer",
+      "nullable": true,
+      "title": "Age"
+    },
+    "weight": {
+      "type": "number",
+      "nullable": true,
+      "title": "Weight"
+    },
+    "height": {
+      "type": "number",
+      "nullable": true,
+      "title": "Height"
+    },
+    "biological_sex": {
+      "type": "string",
+      "nullable": true,
+      "title": "Biological Sex"
+    },
+    "email": {
+      "type": "string",
+      "nullable": true,
+      "title": "Email"
+    }
+  },
+  "type": "object",
+  "required": [
+    "id"
+  ]
+}

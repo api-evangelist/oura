@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicworkout.json",
+  "title": "PublicWorkout",
+  "description": "Public model for Workout.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "activity": {
+      "type": "string",
+      "title": "",
+      "description": "Type of the workout activity."
+    },
+    "calories": {
+      "type": "number",
+      "nullable": true,
+      "title": "",
+      "description": "Energy burned in kilocalories during the workout."
+    },
+    "day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "Day when the workout occurred."
+    },
+    "distance": {
+      "type": "number",
+      "nullable": true,
+      "title": "",
+      "description": "Distance traveled in meters during the workout."
+    },
+    "end_datetime": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "title": "",
+      "description": "Timestamp indicating when the workout ended."
+    },
+    "intensity": {
+      "$ref": "#/components/schemas/PublicWorkoutIntensity",
+      "title": "",
+      "description": "Intensity of the workout."
+    },
+    "label": {
+      "type": "string",
+      "nullable": true,
+      "title": "",
+      "description": "User-defined label for the workout."
+    },
+    "source": {
+      "$ref": "#/components/schemas/PublicWorkoutSource",
+      "title": "",
+      "description": "Possible workout sources."
+    },
+    "start_datetime": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "title": "",
+      "description": "Timestamp indicating when the workout started."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "activity",
+    "day",
+    "end_datetime",
+    "intensity",
+    "source",
+    "start_datetime"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicworkout",
+  "x-owner": "movement-squad"
+}

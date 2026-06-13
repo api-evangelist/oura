@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicdailystress.json",
+  "title": "PublicDailyStress",
+  "description": "Daily stress.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "Day that the daily stress belongs to."
+    },
+    "day_summary": {
+      "$ref": "#/components/schemas/PublicDailyStressSummary",
+      "nullable": true,
+      "title": "",
+      "description": "Stress summary of full day."
+    },
+    "recovery_high": {
+      "type": "integer",
+      "nullable": true,
+      "title": "",
+      "description": "Time spent in a high recovery zone (bottom quartile data) in seconds."
+    },
+    "stress_high": {
+      "type": "integer",
+      "nullable": true,
+      "title": "",
+      "description": "Time spent in a high stress zone (top quartile of data) in seconds."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "day"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicdailystress",
+  "x-owner": "wellbeing-squad"
+}

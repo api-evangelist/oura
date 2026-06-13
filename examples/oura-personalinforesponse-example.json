@@ -1,0 +1,8 @@
+{
+  "id": "string",
+  "age": 0,
+  "weight": 0.0,
+  "height": 0.0,
+  "biological_sex": "string",
+  "email": "string"
+}

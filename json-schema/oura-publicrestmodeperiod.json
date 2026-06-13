@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicrestmodeperiod.json",
+  "title": "PublicRestModePeriod",
+  "description": "Rest mode episode information.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "end_day": {
+      "$ref": "#/components/schemas/ISODate",
+      "nullable": true,
+      "title": "",
+      "description": "End date of rest mode."
+    },
+    "end_time": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "nullable": true,
+      "title": "",
+      "description": "Timestamp when rest mode ended."
+    },
+    "episodes": {
+      "items": {
+        "$ref": "#/components/schemas/PublicRestModeEpisode"
+      },
+      "type": "array",
+      "title": "",
+      "description": "Collection of episodes during rest mode, consisting of tags."
+    },
+    "start_day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "Start date of rest mode."
+    },
+    "start_time": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "nullable": true,
+      "title": "",
+      "description": "Timestamp when rest mode ended."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "episodes",
+    "start_day"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicrestmodeperiod",
+  "x-owner": "sleep-squad"
+}

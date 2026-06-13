@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicsession.json",
+  "title": "PublicSession",
+  "description": "Public model defining a recorded Session.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "The date when the session occurred."
+    },
+    "end_datetime": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "title": "",
+      "description": "Timestamp indicating when the Moment ended."
+    },
+    "heart_rate": {
+      "$ref": "#/components/schemas/PublicSample",
+      "nullable": true,
+      "title": "",
+      "description": "Recorded heart rate samples during the Moment."
+    },
+    "heart_rate_variability": {
+      "$ref": "#/components/schemas/PublicSample",
+      "nullable": true,
+      "title": "",
+      "description": "Recorded heart rate variability samples during the Moment."
+    },
+    "mood": {
+      "$ref": "#/components/schemas/PublicMomentMood",
+      "nullable": true,
+      "title": "",
+      "description": "User-selected mood for the Moment."
+    },
+    "motion_count": {
+      "$ref": "#/components/schemas/PublicSample",
+      "nullable": true,
+      "title": "",
+      "description": "Recorded motion count samples during the Moment."
+    },
+    "start_datetime": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "title": "",
+      "description": "Timestamp indicating when the Moment started."
+    },
+    "type": {
+      "$ref": "#/components/schemas/PublicMomentType",
+      "title": "",
+      "description": "Type of the Moment."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "day",
+    "end_datetime",
+    "start_datetime",
+    "type"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicsession",
+  "x-owner": "wellbeing-squad"
+}

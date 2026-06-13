@@ -50,6 +50,16 @@ apis:
         url: https://cloud.ouraring.com/docs/authentication
       - type: Webhooks
         url: https://cloud.ouraring.com/docs/webhooks
+      - type: OpenAPI
+        url: openapi/oura-oura-ring-api-openapi.yml
+      - type: JSONSchema
+        url: json-schema/
+      - type: Examples
+        url: examples/
+      - type: Vocabulary
+        url: vocabulary/oura-vocabulary.yml
+      - type: JSONLDContext
+        url: json-ld/oura-context.jsonld
 common:
   - type: Website
     url: https://ouraring.com
@@ -75,6 +85,8 @@ common:
     url: rate-limits/oura-rate-limits.yml
   - type: FinOps
     url: finops/oura-finops.yml
+  - type: BlogFeed
+    url: blogs/blogs.json
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

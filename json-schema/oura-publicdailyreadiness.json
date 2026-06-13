@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicdailyreadiness.json",
+  "title": "PublicDailyReadiness",
+  "description": "Public object defining daily readiness.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "contributors": {
+      "$ref": "#/components/schemas/PublicReadinessContributors",
+      "title": "",
+      "description": "Contributors of the daily readiness score."
+    },
+    "day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "Day that the daily readiness belongs to."
+    },
+    "score": {
+      "type": "integer",
+      "nullable": true,
+      "title": "",
+      "description": "Daily readiness score."
+    },
+    "temperature_deviation": {
+      "type": "number",
+      "nullable": true,
+      "title": "",
+      "description": "Temperature deviation in degrees Celsius."
+    },
+    "temperature_trend_deviation": {
+      "type": "number",
+      "nullable": true,
+      "title": "",
+      "description": "Temperature trend deviation in degrees Celsius."
+    },
+    "timestamp": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "title": "",
+      "description": "Timestamp of the daily readiness."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "contributors",
+    "day",
+    "timestamp"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicdailyreadiness",
+  "x-owner": "wellbeing-squad"
+}

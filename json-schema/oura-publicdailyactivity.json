@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicdailyactivity.json",
+  "title": "PublicDailyActivity",
+  "description": "Object defining a daily activity that is a 24-hour period starting at 4 a.m.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "active_calories": {
+      "type": "integer",
+      "title": "",
+      "description": "Active calories expended in kilocalories."
+    },
+    "average_met_minutes": {
+      "type": "number",
+      "title": "",
+      "description": "Average MET minutes."
+    },
+    "class_5_min": {
+      "type": "string",
+      "nullable": true,
+      "title": "",
+      "description": "5-minute activity classification for the period where every character corresponds to:\n'0' = non wear\n'1' = rest\n'2' = inactive\n'3' = low activity\n'4' = medium activity\n'5' = high activity\nExample: \"001233334555524001\"."
+    },
+    "contributors": {
+      "$ref": "#/components/schemas/PublicActivityContributors",
+      "title": "",
+      "description": "Object containing activity score contributors."
+    },
+    "day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "Day that the daily activity belong to."
+    },
+    "equivalent_walking_distance": {
+      "type": "integer",
+      "title": "",
+      "description": "Equivalent walking distance of energe expenditure in meters."
+    },
+    "high_activity_met_minutes": {
+      "type": "integer",
+      "title": "",
+      "description": "The total METs of each minute classified as high activity."
+    },
+    "high_activity_time": {
+      "type": "integer",
+      "title": "",
+      "description": "The total time in seconds of each minute classified as high activity."
+    },
+    "inactivity_alerts": {
+      "type": "integer",
+      "title": "",
+      "description": "Number of inactivity alerts received."
+    },
+    "low_activity_met_minutes": {
+      "type": "integer",
+      "title": "",
+      "description": "The total METs of each minute classified as low activity."
+    },
+    "low_activity_time": {
+      "type": "integer",
+      "title": "",
+      "description": "The total time in seconds of each minute classified as low activity."
+    },
+    "medium_activity_met_minutes": {
+      "type": "integer",
+      "title": "",
+      "description": "The total METs of each minute classified as medium activity."
+    },
+    "medium_activity_time": {
+      "type": "integer",
+      "title": "",
+      "description": "The total time in seconds of each minute classified as medium activity."
+    },
+    "met": {
+      "$ref": "#/components/schemas/PublicSample",
+      "title": "",
+      "description": "Sample containing METs."
+    },
+    "meters_to_target": {
+      "type": "integer",
+      "title": "",
+      "description": "Meters remaining to target."
+    },
+    "non_wear_time": {
+      "type": "integer",
+      "title": "",
+      "description": "Ring non-wear time in seconds."
+    },
+    "resting_time": {
+      "type": "integer",
+      "title": "",
+      "description": "Resting time in seconds."
+    },
+    "score": {
+      "type": "integer",
+      "nullable": true,
+      "title": "",
+      "description": "Activity score in range [1, 100]."
+    },
+    "sedentary_met_minutes": {
+      "type": "integer",
+      "title": "",
+      "description": "Sedentary MET minutes."
+    },
+    "sedentary_time": {
+      "type": "integer",
+      "title": "",
+      "description": "Sedentary time in seconds."
+    },
+    "steps": {
+      "type": "integer",
+      "title": "",
+      "description": "Total number of steps taken."
+    },
+    "target_calories": {
+      "type": "integer",
+      "title": "",
+      "description": "Daily activity target in kilocalories."
+    },
+    "target_meters": {
+      "type": "integer",
+      "title": "",
+      "description": "Daily activity target in meters."
+    },
+    "timestamp": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "title": "",
+      "description": "Timestamp of the daily activity."
+    },
+    "total_calories": {
+      "type": "integer",
+      "title": "",
+      "description": "Total calories expended in kilocalories."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "active_calories",
+    "average_met_minutes",
+    "contributors",
+    "day",
+    "equivalent_walking_distance",
+    "high_activity_met_minutes",
+    "high_activity_time",
+    "inactivity_alerts",
+    "low_activity_met_minutes",
+    "low_activity_time",
+    "medium_activity_met_minutes",
+    "medium_activity_time",
+    "met",
+    "meters_to_target",
+    "non_wear_time",
+    "resting_time",
+    "sedentary_met_minutes",
+    "sedentary_time",
+    "steps",
+    "target_calories",
+    "target_meters",
+    "timestamp",
+    "total_calories"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicdailyactivity",
+  "x-owner": "movement-squad"
+}

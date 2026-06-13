@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicheartraterow.json",
+  "title": "PublicHeartRateRow",
+  "description": "Heart rate sample",
+  "properties": {
+    "timestamp": {
+      "$ref": "#/components/schemas/UtcDateTime",
+      "title": "",
+      "description": "Timestamp of the discrete sample."
+    },
+    "timestamp_unix": {
+      "type": "integer",
+      "title": "",
+      "description": "Timestamp of the discrete sample as unix time in milliseconds."
+    },
+    "bpm": {
+      "type": "integer",
+      "title": "",
+      "description": "Heart rate as beats per minute."
+    },
+    "source": {
+      "$ref": "#/components/schemas/PublicHeartRateSource",
+      "title": "",
+      "description": "Source of the sample."
+    }
+  },
+  "type": "object",
+  "required": [
+    "timestamp",
+    "timestamp_unix",
+    "bpm",
+    "source"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicheartrate",
+  "x-owner": "core-sensing-squad"
+}

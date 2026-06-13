@@ -1,0 +1,23 @@
+{
+  "id": "string",
+  "day": "string",
+  "end_datetime": "string",
+  "heart_rate": {
+    "interval": 0.0,
+    "items": [],
+    "timestamp": "string"
+  },
+  "heart_rate_variability": {
+    "interval": 0.0,
+    "items": [],
+    "timestamp": "string"
+  },
+  "mood": "bad",
+  "motion_count": {
+    "interval": 0.0,
+    "items": [],
+    "timestamp": "string"
+  },
+  "start_datetime": "string",
+  "type": "breathing"
+}

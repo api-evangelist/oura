@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicvo2max.json",
+  "title": "PublicVO2Max",
+  "description": "VO2Max estimate.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "Day that the estimate belongs to."
+    },
+    "timestamp": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "title": "",
+      "description": "Timestamp indicating when the estimate was created."
+    },
+    "vo2_max": {
+      "type": "integer",
+      "title": "",
+      "description": "VO2 max value."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "day",
+    "timestamp",
+    "vo2_max"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicvo2max",
+  "x-owner": "movement-squad"
+}

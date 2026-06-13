@@ -1,0 +1,12 @@
+{
+  "id": "string",
+  "activity": "string",
+  "calories": 0.0,
+  "day": "string",
+  "distance": 0.0,
+  "end_datetime": "string",
+  "intensity": "easy",
+  "label": "string",
+  "source": "manual",
+  "start_datetime": "string"
+}

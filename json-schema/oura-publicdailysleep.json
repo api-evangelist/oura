@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/oura/main/json-schema/oura-publicdailysleep.json",
+  "title": "PublicDailySleep",
+  "description": "Public object defining daily sleep.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "title": "",
+      "description": "Unique identifier of the object."
+    },
+    "contributors": {
+      "$ref": "#/components/schemas/PublicSleepContributors",
+      "title": "",
+      "description": "Contributors for the daily sleep score."
+    },
+    "day": {
+      "$ref": "#/components/schemas/ISODate",
+      "title": "",
+      "description": "Day that the daily sleep belongs to."
+    },
+    "score": {
+      "type": "integer",
+      "nullable": true,
+      "title": "",
+      "description": "Daily sleep score."
+    },
+    "timestamp": {
+      "$ref": "#/components/schemas/LocalizedDateTime",
+      "title": "",
+      "description": "Timestamp of the daily sleep."
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "contributors",
+    "day",
+    "timestamp"
+  ],
+  "x-cloud-only": true,
+  "x-collection": "publicdailysleep",
+  "x-owner": "sleep-squad"
+}
