@@ -5,10 +5,15 @@
   "url": "https://ouraring.com/blog",
   "feeds": [
     {
-      "name": "The Pulse Blog",
-      "url": "https://ouraring.com/blog/feed/",
-      "type": "RSS"
+      "source": "https://www.linkedin.com/company/oura",
+      "feed_url": "https://www.linkedin.com/company/oura",
+      "title": "",
+      "saved": 0,
+      "method": "none"
     }
   ],
-  "posts": []
+  "posts": [],
+  "repo": "oura",
+  "post_count": 0,
+  "fetched": "2026-06-14T20:42:17Z"
 }
