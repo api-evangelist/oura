@@ -1,0 +1,727 @@
+"""
+Oura Ring GraphQL API Schema
+Conceptual schema derived from Oura Ring REST API v2
+Documentation: https://cloud.ouraring.com/docs/
+"""
+
+# ─── Scalars ───────────────────────────────────────────────────────────────────
+
+scalar DateTime
+scalar Date
+scalar Time
+scalar JSON
+
+# ─── Enums ─────────────────────────────────────────────────────────────────────
+
+enum SleepType {
+  DELETED
+  SLEEP
+  LONG_SLEEP
+  LATE_NAP
+  REST
+}
+
+enum SleepPhase {
+  DEEP
+  LIGHT
+  REM
+  AWAKE
+}
+
+enum ActivityContributorCategory {
+  MEET_DAILY_TARGETS
+  MOVE_EVERY_HOUR
+  RECOVERY_TIME
+  STAY_ACTIVE
+  TRAINING_FREQUENCY
+  TRAINING_VOLUME
+}
+
+enum ReadinessContributorCategory {
+  ACTIVITY_BALANCE
+  BODY_TEMPERATURE
+  HRV_BALANCE
+  PREVIOUS_DAY_ACTIVITY
+  PREVIOUS_NIGHT
+  RECOVERY_INDEX
+  RESTING_HEART_RATE
+  SLEEP_BALANCE
+}
+
+enum SleepContributorCategory {
+  DEEP_SLEEP
+  EFFICIENCY
+  LATENCY
+  REM_SLEEP
+  RESTFULNESS
+  TIMING
+  TOTAL_SLEEP
+}
+
+enum WorkoutIntensity {
+  EASY
+  MODERATE
+  HARD
+}
+
+enum WorkoutSource {
+  AUTODETECTED
+  CONFIRMED
+  MANUAL
+  WORKOUT_HEART_RATE
+}
+
+enum HeartRateSource {
+  AWAKE
+  REST
+  SLEEP
+  SESSION
+  LIVE
+  WORKOUT
+}
+
+enum SpO2AggregationType {
+  AVERAGE
+  MIN
+  MAX
+  PERCENTILE_95
+}
+
+enum TagCategory {
+  LIFESTYLE
+  SYMPTOMS
+  OTHER
+}
+
+enum WebhookEventType {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum WebhookDataType {
+  TAG
+  ENHANCED_TAG
+  WORKOUT
+  SESSION
+  SLEEP
+  DAILY_SLEEP
+  DAILY_READINESS
+  DAILY_ACTIVITY
+  DAILY_SPO2
+  SLEEP_TIME
+  DAILY_CARDIOVASCULAR_AGE
+  VO2_MAX
+}
+
+enum DocumentType {
+  SLEEP
+  DAILY_SLEEP
+  DAILY_ACTIVITY
+  DAILY_READINESS
+  WORKOUT
+  SESSION
+  HEART_RATE
+  HRV
+  SPO2
+  TAG
+}
+
+enum TemperatureDeviation {
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum CardiovascularStatus {
+  OPTIMAL
+  GOOD
+  FAIR
+  POOR
+}
+
+enum Vo2MaxStatus {
+  OPTIMAL
+  GOOD
+  FAIR
+  POOR
+}
+
+enum PersonalInfoBiologicalSex {
+  MALE
+  FEMALE
+  OTHER
+  NOT_SET
+}
+
+# ─── Common / Shared Types ──────────────────────────────────────────────────────
+
+type PageInfo {
+  hasNextPage: Boolean!
+  nextToken: String
+}
+
+type SampleInterval {
+  items: [Float]
+  interval: Int!
+  timestamp: DateTime!
+}
+
+type HeartRateSample {
+  bpm: Int!
+  source: HeartRateSource!
+  timestamp: DateTime!
+}
+
+type HRVSample {
+  rmssd: Float!
+  timestamp: DateTime!
+}
+
+type SpO2Sample {
+  spo2Percentage: Float!
+  timestamp: DateTime!
+}
+
+type TemperatureSample {
+  celsius: Float!
+  timestamp: DateTime!
+}
+
+type ContributorScore {
+  category: String!
+  score: Int
+  optimal_range_low: Float
+  optimal_range_high: Float
+}
+
+type TrendScore {
+  score: Int
+  trend: Float
+}
+
+# ─── User / Personal Info ──────────────────────────────────────────────────────
+
+type PersonalInfo {
+  id: String!
+  age: Int
+  weight: Float
+  height: Float
+  biologicalSex: PersonalInfoBiologicalSex
+  email: String
+}
+
+# ─── Ring Configuration ─────────────────────────────────────────────────────────
+
+type RingConfiguration {
+  id: String!
+  color: String
+  design: String
+  firmwareVersion: String
+  hardwareType: String
+  serialNumber: String
+  setUpAt: DateTime
+  size: Int
+}
+
+# ─── Sleep Types ────────────────────────────────────────────────────────────────
+
+type SleepPhaseEntry {
+  phase: SleepPhase!
+  duration: Int!
+}
+
+type SleepContributors {
+  deepSleep: Int
+  efficiency: Int
+  latency: Int
+  remSleep: Int
+  restfulness: Int
+  timing: Int
+  totalSleep: Int
+}
+
+type Sleep {
+  id: String!
+  day: Date!
+  bedtimeEnd: DateTime!
+  bedtimeStart: DateTime!
+  breathingDisturbanceIndex: Float
+  deepSleepDuration: Int
+  efficiency: Int
+  heartRate: SampleInterval
+  hrv: SampleInterval
+  latency: Int
+  lightSleepDuration: Int
+  lowBatteryAlert: Boolean!
+  lowestHeartRate: Int
+  movement30Sec: String
+  period: Int!
+  readinessScoreBonus: Float
+  remSleepDuration: Int
+  restlessPeriods: Int
+  sleepPhase5Min: String
+  sleepScoreDelta: Float
+  sleepAlgorithmVersion: String
+  timeInBed: Int
+  totalSleepDuration: Int
+  type: SleepType!
+}
+
+type DailySleep {
+  id: String!
+  day: Date!
+  contributors: SleepContributors!
+  score: Int
+  timestamp: DateTime!
+}
+
+type SleepTime {
+  id: String!
+  day: Date!
+  optimalBedtime: OptimalBedtime
+  recommendation: String
+  status: String
+}
+
+type OptimalBedtime {
+  dayTz: Int!
+  endOffset: Int!
+  startOffset: Int!
+}
+
+# ─── Readiness Types ────────────────────────────────────────────────────────────
+
+type ReadinessContributors {
+  activityBalance: Int
+  bodyTemperature: Int
+  hrvBalance: Int
+  previousDayActivity: Int
+  previousNight: Int
+  recoveryIndex: Int
+  restingHeartRate: Int
+  sleepBalance: Int
+}
+
+type DailyReadiness {
+  id: String!
+  day: Date!
+  contributors: ReadinessContributors!
+  score: Int
+  temperatureDeviation: Float
+  temperatureTrendDeviation: Float
+  timestamp: DateTime!
+}
+
+# ─── Activity Types ─────────────────────────────────────────────────────────────
+
+type ActivityContributors {
+  meetDailyTargets: Int
+  moveEveryHour: Int
+  recoveryTime: Int
+  stayActive: Int
+  trainingFrequency: Int
+  trainingVolume: Int
+}
+
+type DailyActivity {
+  id: String!
+  averageMetMinutes: Float
+  classificationsDev: [String]
+  contributors: ActivityContributors!
+  day: Date!
+  equivalentWalkingDistance: Int
+  highActivityMetMinutes: Int
+  highActivityTime: Int
+  inactivityAlerts: Int
+  lowActivityMetMinutes: Int
+  lowActivityTime: Int
+  mediumActivityMetMinutes: Int
+  mediumActivityTime: Int
+  metersToTarget: Int
+  nonWearTime: Int
+  restingTime: Int
+  score: Int
+  sedentaryMetMinutes: Int
+  sedentaryTime: Int
+  steps: Int
+  targetCalories: Int
+  targetMetMinutes: Int
+  timestamp: DateTime!
+  totalCalories: Int
+  totalMetMinutes: Int
+}
+
+# ─── Workout Types ──────────────────────────────────────────────────────────────
+
+type Workout {
+  id: String!
+  activity: String!
+  calories: Float
+  day: Date!
+  distance: Float
+  endDatetime: DateTime!
+  intensity: WorkoutIntensity!
+  label: String
+  source: WorkoutSource!
+  startDatetime: DateTime!
+}
+
+# ─── Session Types ──────────────────────────────────────────────────────────────
+
+type Session {
+  id: String!
+  day: Date!
+  endDatetime: DateTime!
+  heartRate: SampleInterval
+  heartRateVariability: SampleInterval
+  mood: String
+  motionCount: SampleInterval
+  startDatetime: DateTime!
+  type: String!
+}
+
+# ─── Heart Rate Types ───────────────────────────────────────────────────────────
+
+type HeartRateConnection {
+  data: [HeartRateSample!]!
+  pageInfo: PageInfo!
+}
+
+# ─── HRV Types ──────────────────────────────────────────────────────────────────
+
+type HRVConnection {
+  data: [HRVSample!]!
+  pageInfo: PageInfo!
+}
+
+type DailyCardiovascularAge {
+  id: String
+  day: Date!
+  vascularAge: Int
+}
+
+# ─── SpO2 Types ─────────────────────────────────────────────────────────────────
+
+type SpO2Aggregator {
+  average: Float
+  min: Float
+  max: Float
+  percentile95: Float
+}
+
+type DailySpO2 {
+  id: String!
+  day: Date!
+  spO2Percentage: SpO2Aggregator
+  breathingDisturbanceIndex: Float
+}
+
+# ─── Temperature Types ──────────────────────────────────────────────────────────
+
+type DailyTemperature {
+  id: String!
+  day: Date!
+  deviation: Float
+  trendDeviation: Float
+}
+
+# ─── Vo2Max Types ───────────────────────────────────────────────────────────────
+
+type Vo2Max {
+  id: String
+  day: Date!
+  timestamp: DateTime!
+  vo2Max: Float
+  vo2MaxConfidence: Float
+  status: Vo2MaxStatus
+}
+
+# ─── Tag Types ──────────────────────────────────────────────────────────────────
+
+type Tag {
+  id: String!
+  day: Date!
+  text: String
+  timestamp: DateTime!
+  tags: [String!]!
+}
+
+type EnhancedTag {
+  id: String!
+  day: Date!
+  comment: String
+  customName: String
+  endTime: DateTime
+  startTime: DateTime
+  tagTypeCode: String!
+}
+
+# ─── Webhook Types ──────────────────────────────────────────────────────────────
+
+type WebhookSubscription {
+  id: String!
+  callbackUrl: String!
+  dataTypes: [WebhookDataType!]!
+  event: WebhookEventType!
+  expirationTime: DateTime
+  verificationToken: String
+}
+
+# ─── Connection (Paginated List) Types ─────────────────────────────────────────
+
+type SleepConnection {
+  data: [Sleep!]!
+  pageInfo: PageInfo!
+}
+
+type DailySleepConnection {
+  data: [DailySleep!]!
+  pageInfo: PageInfo!
+}
+
+type DailyReadinessConnection {
+  data: [DailyReadiness!]!
+  pageInfo: PageInfo!
+}
+
+type DailyActivityConnection {
+  data: [DailyActivity!]!
+  pageInfo: PageInfo!
+}
+
+type WorkoutConnection {
+  data: [Workout!]!
+  pageInfo: PageInfo!
+}
+
+type SessionConnection {
+  data: [Session!]!
+  pageInfo: PageInfo!
+}
+
+type DailySpO2Connection {
+  data: [DailySpO2!]!
+  pageInfo: PageInfo!
+}
+
+type DailyTemperatureConnection {
+  data: [DailyTemperature!]!
+  pageInfo: PageInfo!
+}
+
+type TagConnection {
+  data: [Tag!]!
+  pageInfo: PageInfo!
+}
+
+type EnhancedTagConnection {
+  data: [EnhancedTag!]!
+  pageInfo: PageInfo!
+}
+
+type WebhookSubscriptionConnection {
+  data: [WebhookSubscription!]!
+  pageInfo: PageInfo!
+}
+
+type Vo2MaxConnection {
+  data: [Vo2Max!]!
+  pageInfo: PageInfo!
+}
+
+type DailyCardiovascularAgeConnection {
+  data: [DailyCardiovascularAge!]!
+  pageInfo: PageInfo!
+}
+
+type RingConfigurationConnection {
+  data: [RingConfiguration!]!
+  pageInfo: PageInfo!
+}
+
+type SleepTimeConnection {
+  data: [SleepTime!]!
+  pageInfo: PageInfo!
+}
+
+# ─── Input Types ────────────────────────────────────────────────────────────────
+
+input DateRangeInput {
+  startDate: Date!
+  endDate: Date!
+}
+
+input DateTimeRangeInput {
+  startDatetime: DateTime!
+  endDatetime: DateTime!
+}
+
+input PaginationInput {
+  nextToken: String
+}
+
+input CreateTagInput {
+  day: Date!
+  text: String
+  timestamp: DateTime
+  tags: [String!]!
+}
+
+input UpdateTagInput {
+  text: String
+  timestamp: DateTime
+  tags: [String!]
+}
+
+input CreateEnhancedTagInput {
+  day: Date!
+  comment: String
+  customName: String
+  endTime: DateTime
+  startTime: DateTime
+  tagTypeCode: String!
+}
+
+input UpdateEnhancedTagInput {
+  comment: String
+  customName: String
+  endTime: DateTime
+  startTime: DateTime
+}
+
+input CreateWebhookSubscriptionInput {
+  callbackUrl: String!
+  dataTypes: [WebhookDataType!]!
+  event: WebhookEventType!
+  verificationToken: String
+}
+
+input UpdateWebhookSubscriptionInput {
+  callbackUrl: String
+  dataTypes: [WebhookDataType!]
+  event: WebhookEventType
+  verificationToken: String
+}
+
+input CreateWorkoutInput {
+  activity: String!
+  calories: Float
+  day: Date!
+  distance: Float
+  endDatetime: DateTime!
+  intensity: WorkoutIntensity!
+  label: String
+  startDatetime: DateTime!
+}
+
+input UpdateWorkoutInput {
+  activity: String
+  calories: Float
+  distance: Float
+  endDatetime: DateTime
+  intensity: WorkoutIntensity
+  label: String
+  startDatetime: DateTime
+}
+
+# ─── Mutation Result Types ──────────────────────────────────────────────────────
+
+type DeleteResult {
+  success: Boolean!
+  id: String!
+}
+
+# ─── Query Root ─────────────────────────────────────────────────────────────────
+
+type Query {
+  "Current authenticated user's personal info"
+  personalInfo: PersonalInfo!
+
+  "User's ring configurations"
+  ringConfigurations(pagination: PaginationInput): RingConfigurationConnection!
+  ringConfiguration(id: String!): RingConfiguration
+
+  "Sleep records — multi-day summaries"
+  sleeps(dateRange: DateRangeInput, pagination: PaginationInput): SleepConnection!
+  sleep(id: String!): Sleep
+
+  "Daily sleep scores and contributors"
+  dailySleeps(dateRange: DateRangeInput, pagination: PaginationInput): DailySleepConnection!
+  dailySleep(id: String!): DailySleep
+
+  "Sleep time recommendations"
+  sleepTimes(dateRange: DateRangeInput, pagination: PaginationInput): SleepTimeConnection!
+  sleepTime(id: String!): SleepTime
+
+  "Daily readiness scores and contributors"
+  dailyReadiness(dateRange: DateRangeInput, pagination: PaginationInput): DailyReadinessConnection!
+  dailyReadinessById(id: String!): DailyReadiness
+
+  "Daily activity scores, steps, and calorie data"
+  dailyActivities(dateRange: DateRangeInput, pagination: PaginationInput): DailyActivityConnection!
+  dailyActivity(id: String!): DailyActivity
+
+  "Workout sessions"
+  workouts(dateRange: DateRangeInput, pagination: PaginationInput): WorkoutConnection!
+  workout(id: String!): Workout
+
+  "Mindfulness/meditation sessions"
+  sessions(dateRange: DateRangeInput, pagination: PaginationInput): SessionConnection!
+  session(id: String!): Session
+
+  "Heart rate samples"
+  heartRate(dateTimeRange: DateTimeRangeInput!, pagination: PaginationInput): HeartRateConnection!
+
+  "Daily SpO2 (blood oxygen) aggregates"
+  dailySpO2(dateRange: DateRangeInput, pagination: PaginationInput): DailySpO2Connection!
+  dailySpO2ById(id: String!): DailySpO2
+
+  "Body temperature deviations"
+  dailyTemperature(dateRange: DateRangeInput, pagination: PaginationInput): DailyTemperatureConnection!
+  dailyTemperatureById(id: String!): DailyTemperature
+
+  "VO2 Max estimates"
+  vo2Max(dateRange: DateRangeInput, pagination: PaginationInput): Vo2MaxConnection!
+  vo2MaxById(id: String!): Vo2Max
+
+  "Cardiovascular age estimates"
+  dailyCardiovascularAge(dateRange: DateRangeInput, pagination: PaginationInput): DailyCardiovascularAgeConnection!
+
+  "User-created tags"
+  tags(dateRange: DateRangeInput, pagination: PaginationInput): TagConnection!
+  tag(id: String!): Tag
+
+  "Enhanced tags with structured metadata"
+  enhancedTags(dateRange: DateRangeInput, pagination: PaginationInput): EnhancedTagConnection!
+  enhancedTag(id: String!): EnhancedTag
+
+  "Webhook subscriptions for the authenticated app"
+  webhookSubscriptions(pagination: PaginationInput): WebhookSubscriptionConnection!
+  webhookSubscription(id: String!): WebhookSubscription
+}
+
+# ─── Mutation Root ──────────────────────────────────────────────────────────────
+
+type Mutation {
+  "Tag mutations"
+  createTag(input: CreateTagInput!): Tag!
+  updateTag(id: String!, input: UpdateTagInput!): Tag!
+  deleteTag(id: String!): DeleteResult!
+
+  "Enhanced tag mutations"
+  createEnhancedTag(input: CreateEnhancedTagInput!): EnhancedTag!
+  updateEnhancedTag(id: String!, input: UpdateEnhancedTagInput!): EnhancedTag!
+  deleteEnhancedTag(id: String!): DeleteResult!
+
+  "Workout mutations"
+  createWorkout(input: CreateWorkoutInput!): Workout!
+  updateWorkout(id: String!, input: UpdateWorkoutInput!): Workout!
+  deleteWorkout(id: String!): DeleteResult!
+
+  "Webhook subscription mutations"
+  createWebhookSubscription(input: CreateWebhookSubscriptionInput!): WebhookSubscription!
+  updateWebhookSubscription(id: String!, input: UpdateWebhookSubscriptionInput!): WebhookSubscription!
+  deleteWebhookSubscription(id: String!): DeleteResult!
+  renewWebhookSubscription(id: String!): WebhookSubscription!
+}
