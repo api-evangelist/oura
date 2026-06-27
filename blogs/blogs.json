@@ -1,9 +1,17 @@
 {
   "created": "2026-06-13",
-  "modified": "2026-06-13",
+  "modified": "2026-06-21",
   "specificationVersion": "0.1",
   "url": "https://ouraring.com/blog",
+  "repo": "oura",
   "feeds": [
+    {
+      "source": "https://ouraring.com/blog/feed/",
+      "feed_url": "https://ouraring.com/blog/feed/",
+      "title": "",
+      "saved": 3,
+      "method": "feed"
+    },
     {
       "source": "https://www.linkedin.com/company/oura",
       "feed_url": "https://www.linkedin.com/company/oura",
@@ -13,7 +21,6 @@
     }
   ],
   "posts": [],
-  "repo": "oura",
-  "post_count": 0,
-  "fetched": "2026-06-14T20:42:17Z"
+  "post_count": 5,
+  "fetched": "2026-06-27T12:03:07Z"
 }
