@@ -1,0 +1,43 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/oura-oura-ring-api-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - authorizationCode
+schemes:
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- name: OAuth2
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://cloud.ouraring.com/oauth/authorize
+    tokenUrl: https://api.ouraring.com/oauth/token
+    scopes: 8
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- name: ClientIdAuth
+  type: apiKey
+  in: header
+  parameter: x-client-id
+  description: Client ID for webhook subscription endpoints. Must be used together with x-client-secret
+    header.
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- name: ClientSecretAuth
+  type: apiKey
+  in: header
+  parameter: x-client-secret
+  description: Client Secret for webhook subscription endpoints. Must be used together with
+    x-client-id header.
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml

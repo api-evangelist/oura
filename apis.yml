@@ -60,6 +60,14 @@ apis:
   - url: graphql/oura-graphql.md
     type: GraphQL
 common:
+- type: TrustCenter
+  url: security/oura-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/oura-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/oura-domain-security.yml
+- type: Authentication
+  url: authentication/oura-authentication.yml
 - type: OAuthScopes
   url: scopes/oura-scopes.yml
 - type: Website
