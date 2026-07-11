@@ -60,6 +60,8 @@ apis:
   - url: graphql/oura-graphql.md
     type: GraphQL
 common:
+- type: OAuthScopes
+  url: scopes/oura-scopes.yml
 - type: Website
   url: https://ouraring.com
 - type: Developer

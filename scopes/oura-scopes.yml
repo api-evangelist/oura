@@ -1,0 +1,59 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/oura-oura-ring-api-openapi.yml
+schemes:
+- name: OAuth2
+  source: openapi/oura-oura-ring-api-openapi.yml
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://cloud.ouraring.com/oauth/authorize
+    tokenUrl: https://api.ouraring.com/oauth/token
+scopes:
+- scope: daily
+  description: Daily summaries of sleep, activity and readiness
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- scope: email
+  description: Email address of the user
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- scope: heartrate
+  description: Time series heart rate for Gen 3 users
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- scope: personal
+  description: Personal information (gender, age, height, weight)
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- scope: session
+  description: Guided and unguided sessions in the Oura app
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- scope: spo2Daily
+  description: SpO2 Average recorded during sleep
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- scope: tag
+  description: User entered tags
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
+- scope: workout
+  description: Summaries for auto-detected and user entered workouts
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/oura-oura-ring-api-openapi.yml
