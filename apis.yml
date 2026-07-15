@@ -60,6 +60,8 @@ apis:
   - url: graphql/oura-graphql.md
     type: GraphQL
 common:
+- type: AgenticAccess
+  url: agentic-access/oura-agentic-access.yml
 - type: TrustCenter
   url: security/oura-trust-center.yml
 - type: VulnerabilityDisclosure
