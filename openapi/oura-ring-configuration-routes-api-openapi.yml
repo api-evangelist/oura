@@ -1,0 +1,315 @@
+openapi: 3.0.3
+info:
+  title: Oura API Documentation Daily Activity Routes Ring Configuration Routes API
+  description: "# Overview \nThe Oura API allows Oura users and partner applications to improve their user experience with Oura data.\nThis document describes the Oura API Version 2 (V2), which is the only available integration point for Oura data. The previous V1 API has been sunset.\n# Getting Started \n## What is an API?\nAn API (Application Programming Interface) allows different software applications to communicate with each other. The Oura API enables you to access your Oura Ring data programmatically.\n## Quick Start Guide\n1. Register an [API Application](https://cloud.ouraring.com/oauth/applications) and implement OAuth2\n2. **Make Your First API Call**:\n   ```\n   curl -X GET https://api.ouraring.com/v2/usercollection/personal_info \\\n   -H \"Authorization: Bearer YOUR_TOKEN_HERE\"\n   ```\n3. **Explore Data Types**:\n   - Browse the available endpoints in this documentation to discover what data you can access\n   - Each endpoint includes example requests and responses\n4. **Set Up Webhooks (Strongly Recommended)**:\n   - Webhooks are the preferred way to consume Oura data\n   - We have not had customers hit rate limits with webhooks properly implemented\n   - Make a single request for historical data when a user first connects, then use webhooks for ongoing updates\n   - Webhook notifications come approximately 30 seconds after data syncs from the mobile app\n   - [Set up webhooks](#tag/Webhook-Subscription-Routes) to receive notifications when data changes\n## Common Questions\n- **Data Delay**: Different data types sync at different times - sleep data requires users to open the Oura app, while daily activity and stress may sync in the background\n# Data Access\nIn order to access data, a registered [API Application](https://cloud.ouraring.com/oauth/applications) is required.\n API Applications are limited to **10** users before requiring approval from Oura. There is no limit once an application is approved.\n Additionally, Oura users **must provide consent** to share each data type an API Application has access to.\nAll data access requests through the Oura API require [Authentication](https://cloud.ouraring.com/docs/authentication).\nAdditionally, we recommend that Oura users keep their mobile app updated to support API access for the latest data types.\n# Authentication\nThe Oura Cloud API supports authentication through the industry-standard OAuth2 protocol. For more information, see our [Authentication instructions](https://cloud.ouraring.com/docs/authentication).\nAccess tokens must be included in the request header as follows:\n```http\nGET /v2/usercollection/personal_info HTTP/1.1\nHost: api.ouraring.com\nAuthorization: Bearer <token>\n```\nPlease note that personal access tokens were deprecated in December 2025 and are no longer available for use.\n# Oura HTTP Response Codes\n| Response Code                        | Description |\n| ------------------------------------ | - |\n| 200 OK                               | Successful Response         |\n| 400 Query Parameter Validation Error | The request contains query parameters that are invalid or incorrectly formatted. |\n| 401 Unauthorized                     | Invalid or expired authentication token. |\n| 403 Forbidden                        | The requested resource requires additional permissions or the user's Oura subscription has expired. |\n| 429 Too Many Requests                | Rate limit exceeded. See response headers for retry guidance. |\n\n## Rate Limits\nThe API enforces rate limits at two layers to ensure fair access across all applications:\n- a per-access-token limit, which throttles single-token floods, and\n- a per-application limit, which caps the aggregate traffic across all of an application's end-user tokens so one fan-out app can't dominate shared capacity.\n\nA request that trips either layer receives a `429 Too Many Requests`. The `X-RateLimit-Tier` response header identifies which layer fired.\n\nIf your application regularly approaches rate limits, [webhooks](#tag/Webhook-Subscription-Routes) are strongly recommended — most applications that implement webhooks correctly do not encounter rate limit issues.\n\n[Contact us](mailto:api-support@ouraring.com) if you expect your usage to require higher limits.\n\n## Rate Limit Response Headers\nWhen a `429 Too Many Requests` response is returned, five headers are included to guide retries. Prefer these over fixed-interval backoff:\n- **`Retry-After`** — integer seconds to wait before retrying. RFC 7231-compliant; safe to feed directly into your client's backoff logic.\n- **`X-RateLimit-Limit`** — the request ceiling for the current window.\n- **`X-RateLimit-Window`** — the rolling window length in seconds that the ceiling applies to.\n- **`X-RateLimit-Reset`** — Unix epoch (seconds) at which the window resets and quota is fully restored.\n- **`X-RateLimit-Tier`** — identifies which limit was exceeded, useful when contacting support.\n"
+  termsOfService: https://cloud.ouraring.com/legal/api-agreement
+  version: '2.0'
+  x-logo:
+    url: /v2/static/img/Oura_Logo-Developer_RBG_Black.svg
+servers:
+- url: https://api.ouraring.com
+  description: Oura API
+tags:
+- name: Ring Configuration Routes
+  description: The Ring Configuration scope includes information about the user's ring(s). This includes the model, size, color, etc.
+paths:
+  /v2/usercollection/ring_configuration:
+    get:
+      tags:
+      - Ring Configuration Routes
+      summary: Multiple Ring Configuration Documents
+      operationId: Multiple_ring_configuration_Documents_v2_usercollection_ring_configuration_get
+      parameters:
+      - name: fields
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          description: Comma-separated list of fields to include in the response, in addition to the always returned fields. Defaults to all fields if not provided.
+          title: Fields
+        description: Comma-separated list of fields to include in the response, in addition to the always returned fields. Defaults to all fields if not provided.
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicRingConfiguration_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Multiple Ring Configuration Documents V2 Usercollection Ring Configuration Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/usercollection/ring_configuration?fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/usercollection/ring_configuration' \nparams = {'fields': 'day,score'}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/usercollection/ring_configuration?fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/usercollection/ring_configuration?fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/usercollection/ring_configuration/{document_id}:
+    get:
+      tags:
+      - Ring Configuration Routes
+      summary: Single Ring Configuration Document
+      operationId: Single_ring_configuration_Document_v2_usercollection_ring_configuration__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicRingConfiguration'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/usercollection/ring_configuration/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/usercollection/ring_configuration/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/usercollection/ring_configuration/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/usercollection/ring_configuration/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PublicRingConfiguration:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        color:
+          $ref: '#/components/schemas/PublicRingColor'
+          nullable: true
+          title: ''
+          description: Color of the ring.
+        design:
+          $ref: '#/components/schemas/PublicRingDesign'
+          nullable: true
+          title: ''
+          description: Design of the ring.
+        firmware_version:
+          type: string
+          nullable: true
+          title: ''
+          description: Firmware version of the ring.
+        hardware_type:
+          $ref: '#/components/schemas/PublicRingHardwareType'
+          nullable: true
+          title: ''
+          description: Hardware type of the ring.
+        set_up_at:
+          $ref: '#/components/schemas/UtcDateTime'
+          nullable: true
+          title: ''
+          description: UTC timestamp indicating when the ring was set up.
+        size:
+          type: integer
+          nullable: true
+          title: ''
+          description: US size of the ring.
+      type: object
+      required:
+      - id
+      title: PublicRingConfiguration
+      description: Ring configuration.
+      x-cloud-only: true
+      x-collection: publicringconfiguration
+      x-owner: connectivity-squad
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UtcDateTime:
+      type: string
+    MultiDocumentResponse_PublicRingConfiguration_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicRingConfiguration'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicRingConfiguration]
+    PublicRingDesign:
+      type: string
+      enum:
+      - heritage
+      - balance
+      - balance_diamond
+      - horizon
+      - ceramic
+      title: PublicRingDesign
+      description: Possible ring designs.
+    PublicRingHardwareType:
+      type: string
+      enum:
+      - gen1
+      - gen2
+      - gen2m
+      - gen3
+      - gen4
+      title: PublicRingHardwareType
+      description: Possible ring hardware types.
+    MultiDocumentResponseDict:
+      properties:
+        data:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponseDict
+    PublicRingColor:
+      type: string
+      enum:
+      - brushed_silver
+      - glossy_black
+      - glossy_gold
+      - glossy_white
+      - gucci
+      - matt_gold
+      - rose
+      - silver
+      - stealth_black
+      - titanium
+      - titanium_and_gold
+      - cloud
+      - petal
+      - midnight
+      - tide
+      title: PublicRingColor
+      description: Possible ring colors.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://cloud.ouraring.com/oauth/authorize
+          tokenUrl: https://api.ouraring.com/oauth/token
+          scopes:
+            email: Email address of the user
+            personal: Personal information (gender, age, height, weight)
+            daily: Daily summaries of sleep, activity and readiness
+            heartrate: Time series heart rate for Gen 3 users
+            workout: Summaries for auto-detected and user entered workouts
+            tag: User entered tags
+            session: Guided and unguided sessions in the Oura app
+            spo2Daily: SpO2 Average recorded during sleep
+    ClientIdAuth:
+      type: apiKey
+      in: header
+      name: x-client-id
+      description: Client ID for webhook subscription endpoints. Must be used together with x-client-secret header.
+    ClientSecretAuth:
+      type: apiKey
+      in: header
+      name: x-client-secret
+      description: Client Secret for webhook subscription endpoints. Must be used together with x-client-id header.

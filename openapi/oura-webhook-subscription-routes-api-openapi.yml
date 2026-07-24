@@ -1,0 +1,361 @@
+openapi: 3.0.3
+info:
+  title: Oura API Documentation Daily Activity Routes Webhook Subscription Routes API
+  description: "# Overview \nThe Oura API allows Oura users and partner applications to improve their user experience with Oura data.\nThis document describes the Oura API Version 2 (V2), which is the only available integration point for Oura data. The previous V1 API has been sunset.\n# Getting Started \n## What is an API?\nAn API (Application Programming Interface) allows different software applications to communicate with each other. The Oura API enables you to access your Oura Ring data programmatically.\n## Quick Start Guide\n1. Register an [API Application](https://cloud.ouraring.com/oauth/applications) and implement OAuth2\n2. **Make Your First API Call**:\n   ```\n   curl -X GET https://api.ouraring.com/v2/usercollection/personal_info \\\n   -H \"Authorization: Bearer YOUR_TOKEN_HERE\"\n   ```\n3. **Explore Data Types**:\n   - Browse the available endpoints in this documentation to discover what data you can access\n   - Each endpoint includes example requests and responses\n4. **Set Up Webhooks (Strongly Recommended)**:\n   - Webhooks are the preferred way to consume Oura data\n   - We have not had customers hit rate limits with webhooks properly implemented\n   - Make a single request for historical data when a user first connects, then use webhooks for ongoing updates\n   - Webhook notifications come approximately 30 seconds after data syncs from the mobile app\n   - [Set up webhooks](#tag/Webhook-Subscription-Routes) to receive notifications when data changes\n## Common Questions\n- **Data Delay**: Different data types sync at different times - sleep data requires users to open the Oura app, while daily activity and stress may sync in the background\n# Data Access\nIn order to access data, a registered [API Application](https://cloud.ouraring.com/oauth/applications) is required.\n API Applications are limited to **10** users before requiring approval from Oura. There is no limit once an application is approved.\n Additionally, Oura users **must provide consent** to share each data type an API Application has access to.\nAll data access requests through the Oura API require [Authentication](https://cloud.ouraring.com/docs/authentication).\nAdditionally, we recommend that Oura users keep their mobile app updated to support API access for the latest data types.\n# Authentication\nThe Oura Cloud API supports authentication through the industry-standard OAuth2 protocol. For more information, see our [Authentication instructions](https://cloud.ouraring.com/docs/authentication).\nAccess tokens must be included in the request header as follows:\n```http\nGET /v2/usercollection/personal_info HTTP/1.1\nHost: api.ouraring.com\nAuthorization: Bearer <token>\n```\nPlease note that personal access tokens were deprecated in December 2025 and are no longer available for use.\n# Oura HTTP Response Codes\n| Response Code                        | Description |\n| ------------------------------------ | - |\n| 200 OK                               | Successful Response         |\n| 400 Query Parameter Validation Error | The request contains query parameters that are invalid or incorrectly formatted. |\n| 401 Unauthorized                     | Invalid or expired authentication token. |\n| 403 Forbidden                        | The requested resource requires additional permissions or the user's Oura subscription has expired. |\n| 429 Too Many Requests                | Rate limit exceeded. See response headers for retry guidance. |\n\n## Rate Limits\nThe API enforces rate limits at two layers to ensure fair access across all applications:\n- a per-access-token limit, which throttles single-token floods, and\n- a per-application limit, which caps the aggregate traffic across all of an application's end-user tokens so one fan-out app can't dominate shared capacity.\n\nA request that trips either layer receives a `429 Too Many Requests`. The `X-RateLimit-Tier` response header identifies which layer fired.\n\nIf your application regularly approaches rate limits, [webhooks](#tag/Webhook-Subscription-Routes) are strongly recommended — most applications that implement webhooks correctly do not encounter rate limit issues.\n\n[Contact us](mailto:api-support@ouraring.com) if you expect your usage to require higher limits.\n\n## Rate Limit Response Headers\nWhen a `429 Too Many Requests` response is returned, five headers are included to guide retries. Prefer these over fixed-interval backoff:\n- **`Retry-After`** — integer seconds to wait before retrying. RFC 7231-compliant; safe to feed directly into your client's backoff logic.\n- **`X-RateLimit-Limit`** — the request ceiling for the current window.\n- **`X-RateLimit-Window`** — the rolling window length in seconds that the ceiling applies to.\n- **`X-RateLimit-Reset`** — Unix epoch (seconds) at which the window resets and quota is fully restored.\n- **`X-RateLimit-Tier`** — identifies which limit was exceeded, useful when contacting support.\n"
+  termsOfService: https://cloud.ouraring.com/legal/api-agreement
+  version: '2.0'
+  x-logo:
+    url: /v2/static/img/Oura_Logo-Developer_RBG_Black.svg
+servers:
+- url: https://api.ouraring.com
+  description: Oura API
+tags:
+- name: Webhook Subscription Routes
+  description: "# Webhooks for Real-Time Data Updates\n\n## What are Webhooks?\nWebhooks are a way for the Oura API to notify your application when new data is available, instead of requiring your application to constantly check for updates (polling). Think of webhooks as \"reverse APIs\" - instead of your application requesting data, Oura's servers send data to your application when something changes.\n\n## Why Use Webhooks (Important!)\n- **RECOMMENDED APPROACH**: Webhooks are the preferred way to consume Oura data\n- **Avoid Rate Limits**: We have not had customers hit rate limits with webhooks properly implemented\n- **Near Real-Time Updates**: Webhook notifications come approximately 30 seconds after data syncs from the mobile app\n- **Efficient Resource Usage**: Reduces unnecessary API calls and server load\n- **Better User Experience**: Your application stays updated without constant polling\n\n## How Webhooks Work with Oura\n1. **You set up an endpoint**: Create a URL on your server that can receive POST requests\n2. **You subscribe to events**: Tell Oura what data types and events you want to be notified about\n3. **Oura verifies your endpoint**: A one-time check to ensure your endpoint is valid\n4. **Oura sends notifications**: When data changes, Oura sends a POST request to your endpoint\n5. **You process the event**: Your endpoint receives basic event details\n6. **You fetch complete data**: Use the provided IDs to retrieve the full data via the API\n\n## Recommended Implementation Pattern\n1. **Initial Data Load**: When a user first connects, make a single API request for historical data\n2. **Subscribe to Webhooks**: Set up webhook subscriptions for all data types you need\n3. **Process Webhook Events**: As users sync their rings, you'll receive notifications about new data\n4. **Fetch Updated Data**: Use the object_id from webhook events to fetch the specific updated data\n\nThis pattern minimizes API calls while ensuring your application always has the latest data.\n\n## Setup Guide\n\n### Step 1: Create Your Webhook Endpoint\nSet up an HTTP endpoint on your server that can:\n- Handle both GET requests (for verification) and POST requests (for events)\n- Respond to verification challenges during subscription setup\n- Process incoming webhook events quickly (under 10 seconds)\n\nExample endpoint implementation (Node.js):\n```javascript\n// Express.js route handlers for your webhook endpoint\napp.get('/oura-webhook', (req, res) => {\n  // Verification handler - required during subscription setup\n  const { verification_token, challenge } = req.query;\n\n  // Verify the token matches your expected token\n  if (verification_token === YOUR_VERIFICATION_TOKEN) {\n    // Return the challenge in the required format\n    return res.json({ challenge });\n  }\n\n  // If verification fails\n  return res.status(401).send('Invalid verification token');\n});\n\napp.post('/oura-webhook', (req, res) => {\n  // Event handler - processes incoming webhook events\n\n  // Always respond quickly (under 10 seconds)\n  // Process the event asynchronously if needed\n  res.status(200).send('OK');\n\n  // Then process the event data\n  const { event_type, data_type, object_id, user_id } = req.body;\n  processEventAsync(event_type, data_type, object_id, user_id);\n});\n```\n\n### Step 2: Create a Webhook Subscription\nCall the `POST /v2/webhook/subscription` endpoint to register your webhook:\n\n```\nPOST /v2/webhook/subscription\nHeaders:\n  x-client-id: YOUR_CLIENT_ID\n  x-client-secret: YOUR_CLIENT_SECRET\n  Content-Type: application/json\n\nBody:\n{\n  \"callback_url\": \"https://your-server.com/oura-webhook\",\n  \"verification_token\": \"your-secret-verification-token\",\n  \"event_type\": \"update\",\n  \"data_type\": \"sleep\"\n}\n```\n\nYou need to create separate subscriptions for each combination of:\n- **event_type**: The type of event (create, update, delete)\n- **data_type**: The type of data you're interested in (sleep, activity, etc.)\n\n### Step 3: Verification Process\nWhen you create a subscription, Oura verifies your endpoint:\n\n1. Oura sends a GET request to your callback URL with query parameters:\n   ```\n   GET https://your-server.com/oura-webhook?verification_token=your-token&challenge=random-string\n   ```\n\n2. Your endpoint must verify the token and respond with the challenge:\n   ```json\n   {\n     \"challenge\": \"random-string\"\n   }\n   ```\n\n3. If verification succeeds, your subscription is activated\n\n![Verification Flow](/img/webhook-verification-flow-diagram.drawio.png)\n\n### Step 4: Receiving and Processing Events\nWhen an event occurs (e.g., user syncs new sleep data):\n\n1. Oura sends a POST request to your callback URL:\n   ```\n   POST https://your-server.com/oura-webhook\n   Headers:\n     x-oura-signature: HMAC_SIGNATURE\n     x-oura-timestamp: 1234567890\n\n   Body:\n   {\n     \"event_type\": \"update\",\n     \"data_type\": \"sleep\",\n     \"object_id\": \"12345abc\",\n     \"event_time\": \"2023-01-01T08:00:00+00:00\",\n     \"user_id\": \"user123\"\n   }\n   ```\n\n2. Your endpoint should:\n   - Verify the signature for security (see below)\n   - Respond quickly (under 10 seconds) with a 2xx status\n   - Process the event asynchronously if needed\n   - Use the object_id to fetch the complete data via the API\n\n## Security Best Practices\n\n### Verify Webhook Signatures\nAlways verify that webhook requests are actually from Oura by checking the HMAC signature:\n\n```javascript\nconst crypto = require('crypto');\n\nfunction verifySignature(headers, body, clientSecret) {\n  const signature = headers['x-oura-signature'];\n  const timestamp = headers['x-oura-timestamp'];\n\n  // Create HMAC using your client secret\n  const hmac = crypto.createHmac('sha256', clientSecret);\n  hmac.update(timestamp + JSON.stringify(body));\n  const calculatedSignature = hmac.digest('hex').toUpperCase();\n\n  // Compare calculated signature with received signature\n  return calculatedSignature === signature;\n}\n\n// In your webhook handler\napp.post('/oura-webhook', (req, res) => {\n  // Verify signature\n  if (!verifySignature(req.headers, req.body, CLIENT_SECRET)) {\n    return res.status(401).send('Invalid signature');\n  }\n\n  // Process valid webhook\n  res.status(200).send('OK');\n  // ...\n});\n```\n\n### Use HTTPS\nAlways use HTTPS for your webhook endpoint to ensure data is encrypted in transit.\n\n### Keep Your Verification Token Secret\nChoose a strong, random verification token and don't share it.\n\n## Handling Webhook Failures\n\n### Retry Mechanism\nOura will retry failed webhook deliveries:\n- For 4xx responses: 10 retries\n- For 5xx responses: 10 retries\n- For timeouts: 10 retries\n\n### Canceling Subscriptions\nIf you want to cancel a subscription, you can:\n- Use the DELETE endpoint: `DELETE /v2/webhook/subscription/{id}`\n- Or respond with a 410 status code to automatically cancel\n\n## Common Questions\n\n### How quickly will I receive webhooks?\nWebhook notifications arrive approximately 30 seconds after data syncs from the mobile app. The timing depends on the data type:\n- **Sleep, Readiness, and other user-initiated sync data**: These only sync when the user opens the Oura app and actively syncs their ring\n- **Daily Activity, Daily Stress, and other background data**: These may update periodically in the background without user action\n\n### What if my server goes down?\nOura will retry webhook deliveries for about an hour if your server doesn't respond properly. However, if your server is down for an extended period, you might miss some events. It's a good practice to implement a reconciliation process that can fetch data for periods when your webhook might have been unavailable.\n\n### How can I test webhooks locally?\nUse a tool like [ngrok](https://ngrok.com/) to expose your local development server to the internet with a public URL.\n\n### Can I use the same callback URL for different subscriptions?\nYes, you can use the same URL for multiple subscriptions. Your handler can differentiate between events using the `event_type` and `data_type` fields in the webhook payload.\n\n### Will I hit rate limits using webhooks?\nWe have not had customers hit rate limits with webhooks properly implemented. The recommended pattern is:\n1. Make a single request for historical data when a user first connects\n2. Use webhooks for all ongoing data updates\n3. Only fetch the specific data that has changed based on webhook notifications\n\nThis approach minimizes API calls while ensuring your application always has the latest data.\n        "
+paths:
+  /v2/webhook/subscription:
+    get:
+      tags:
+      - Webhook Subscription Routes
+      summary: List Webhook Subscriptions
+      operationId: list_webhook_subscriptions_v2_webhook_subscription_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/WebhookSubscriptionModel'
+                type: array
+                title: Response List Webhook Subscriptions V2 Webhook Subscription Get
+      security:
+      - ClientIdAuth: []
+        ClientSecretAuth: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/webhook/subscription'' --header ''x-client-id: client-id'' --header ''x-client-secret: client-secret'''
+    post:
+      tags:
+      - Webhook Subscription Routes
+      summary: Create Webhook Subscription
+      operationId: create_webhook_subscription_v2_webhook_subscription_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWebhookSubscriptionRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionModel'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - ClientIdAuth: []
+        ClientSecretAuth: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl --location --request POST 'https://api.ouraring.com/v2/webhook/subscription' --header 'x-client-id: client-id' --header 'x-client-secret: client-secret' --header 'Content-Type: application/json' --data-raw '{\n    \"callback_url\": \"https://my-api/oura/tag/delete\",\n    \"verification_token\": \"123\",\n    \"event_type\": \"delete\",\n    \"data_type\": \"tag\"\n}'"
+  /v2/webhook/subscription/{id}:
+    get:
+      tags:
+      - Webhook Subscription Routes
+      summary: Get Webhook Subscription
+      operationId: get_webhook_subscription_v2_webhook_subscription__id__get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionModel'
+        '403':
+          description: Webhook with specified id does not exist.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - ClientIdAuth: []
+        ClientSecretAuth: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/webhook/subscription/5d3fe17b-f880-4d93-b9b6-afbfb76c1e78'' --header ''x-client-id: client-id'' --header ''x-client-secret: client-secret'''
+    put:
+      tags:
+      - Webhook Subscription Routes
+      summary: Update Webhook Subscription
+      operationId: update_webhook_subscription_v2_webhook_subscription__id__put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebhookSubscriptionRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionModel'
+        '403':
+          description: Webhook with specified id does not exist.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - ClientIdAuth: []
+        ClientSecretAuth: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl --location --request PUT 'https://api.ouraring.com/v2/webhook/subscription/5d3fe17b-f880-4d93-b9b6-afbfb76c1e78' --header 'x-client-id: client-id' --header 'x-client-secret: client-secret' --header 'Content-Type: application/json' --data-raw '{\n    \"callback_url\": \"https://my-api/oura/tag/delete\",\n    \"verification_token\": \"123\",\n    \"event_type\": \"delete\",\n    \"data_type\": \"tag\"\n}'"
+    delete:
+      tags:
+      - Webhook Subscription Routes
+      summary: Delete Webhook Subscription
+      operationId: delete_webhook_subscription_v2_webhook_subscription__id__delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '204':
+          description: Successful Response
+        '403':
+          description: Webhook with specified id does not exist.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - ClientIdAuth: []
+        ClientSecretAuth: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request DELETE ''https://api.ouraring.com/v2/webhook/subscription/5d3fe17b-f880-4d93-b9b6-afbfb76c1e78'' --header ''x-client-id: client-id'' --header ''x-client-secret: client-secret'''
+  /v2/webhook/subscription/renew/{id}:
+    put:
+      tags:
+      - Webhook Subscription Routes
+      summary: Renew Webhook Subscription
+      operationId: renew_webhook_subscription_v2_webhook_subscription_renew__id__put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionModel'
+        '403':
+          description: Webhook with specified id does not exist.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - ClientIdAuth: []
+        ClientSecretAuth: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request PUT ''https://api.ouraring.com/v2/webhook/subscription/renew/5d3fe17b-f880-4d93-b9b6-afbfb76c1e78'' --header ''x-client-id: client-id'' --header ''x-client-secret: client-secret'' --header ''Content-Type: application/json'''
+components:
+  schemas:
+    ExtApiV2DataType:
+      type: string
+      enum:
+      - tag
+      - enhanced_tag
+      - workout
+      - session
+      - sleep
+      - daily_sleep
+      - daily_readiness
+      - daily_activity
+      - daily_spo2
+      - sleep_time
+      - rest_mode_period
+      - ring_configuration
+      - daily_stress
+      - daily_cardiovascular_age
+      - daily_resilience
+      - vo2_max
+      - meal
+      title: ExtApiV2DataType
+    WebhookOperation:
+      type: string
+      enum:
+      - create
+      - update
+      - delete
+      title: WebhookOperation
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UpdateWebhookSubscriptionRequest:
+      properties:
+        verification_token:
+          type: string
+          title: Verification Token
+        callback_url:
+          type: string
+          nullable: true
+          title: Callback Url
+        event_type:
+          $ref: '#/components/schemas/WebhookOperation'
+          nullable: true
+        data_type:
+          $ref: '#/components/schemas/ExtApiV2DataType'
+          nullable: true
+      type: object
+      required:
+      - verification_token
+      title: UpdateWebhookSubscriptionRequest
+    CreateWebhookSubscriptionRequest:
+      properties:
+        callback_url:
+          type: string
+          title: Callback Url
+        verification_token:
+          type: string
+          title: Verification Token
+        event_type:
+          $ref: '#/components/schemas/WebhookOperation'
+        data_type:
+          $ref: '#/components/schemas/ExtApiV2DataType'
+      type: object
+      required:
+      - callback_url
+      - verification_token
+      - event_type
+      - data_type
+      title: CreateWebhookSubscriptionRequest
+    WebhookSubscriptionModel:
+      properties:
+        id:
+          type: string
+          format: uuid4
+          title: Id
+        callback_url:
+          type: string
+          title: Callback Url
+        event_type:
+          $ref: '#/components/schemas/WebhookOperation'
+        data_type:
+          $ref: '#/components/schemas/ExtApiV2DataType'
+        expiration_time:
+          type: string
+          format: date-time
+          title: Expiration Time
+      type: object
+      required:
+      - id
+      - callback_url
+      - event_type
+      - data_type
+      - expiration_time
+      title: WebhookSubscriptionModel
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://cloud.ouraring.com/oauth/authorize
+          tokenUrl: https://api.ouraring.com/oauth/token
+          scopes:
+            email: Email address of the user
+            personal: Personal information (gender, age, height, weight)
+            daily: Daily summaries of sleep, activity and readiness
+            heartrate: Time series heart rate for Gen 3 users
+            workout: Summaries for auto-detected and user entered workouts
+            tag: User entered tags
+            session: Guided and unguided sessions in the Oura app
+            spo2Daily: SpO2 Average recorded during sleep
+    ClientIdAuth:
+      type: apiKey
+      in: header
+      name: x-client-id
+      description: Client ID for webhook subscription endpoints. Must be used together with x-client-secret header.
+    ClientSecretAuth:
+      type: apiKey
+      in: header
+      name: x-client-secret
+      description: Client Secret for webhook subscription endpoints. Must be used together with x-client-id header.

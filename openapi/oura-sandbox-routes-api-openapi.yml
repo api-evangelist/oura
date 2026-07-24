@@ -1,0 +1,4014 @@
+openapi: 3.0.3
+info:
+  title: Oura API Documentation Daily Activity Routes Sandbox Routes API
+  description: "# Overview \nThe Oura API allows Oura users and partner applications to improve their user experience with Oura data.\nThis document describes the Oura API Version 2 (V2), which is the only available integration point for Oura data. The previous V1 API has been sunset.\n# Getting Started \n## What is an API?\nAn API (Application Programming Interface) allows different software applications to communicate with each other. The Oura API enables you to access your Oura Ring data programmatically.\n## Quick Start Guide\n1. Register an [API Application](https://cloud.ouraring.com/oauth/applications) and implement OAuth2\n2. **Make Your First API Call**:\n   ```\n   curl -X GET https://api.ouraring.com/v2/usercollection/personal_info \\\n   -H \"Authorization: Bearer YOUR_TOKEN_HERE\"\n   ```\n3. **Explore Data Types**:\n   - Browse the available endpoints in this documentation to discover what data you can access\n   - Each endpoint includes example requests and responses\n4. **Set Up Webhooks (Strongly Recommended)**:\n   - Webhooks are the preferred way to consume Oura data\n   - We have not had customers hit rate limits with webhooks properly implemented\n   - Make a single request for historical data when a user first connects, then use webhooks for ongoing updates\n   - Webhook notifications come approximately 30 seconds after data syncs from the mobile app\n   - [Set up webhooks](#tag/Webhook-Subscription-Routes) to receive notifications when data changes\n## Common Questions\n- **Data Delay**: Different data types sync at different times - sleep data requires users to open the Oura app, while daily activity and stress may sync in the background\n# Data Access\nIn order to access data, a registered [API Application](https://cloud.ouraring.com/oauth/applications) is required.\n API Applications are limited to **10** users before requiring approval from Oura. There is no limit once an application is approved.\n Additionally, Oura users **must provide consent** to share each data type an API Application has access to.\nAll data access requests through the Oura API require [Authentication](https://cloud.ouraring.com/docs/authentication).\nAdditionally, we recommend that Oura users keep their mobile app updated to support API access for the latest data types.\n# Authentication\nThe Oura Cloud API supports authentication through the industry-standard OAuth2 protocol. For more information, see our [Authentication instructions](https://cloud.ouraring.com/docs/authentication).\nAccess tokens must be included in the request header as follows:\n```http\nGET /v2/usercollection/personal_info HTTP/1.1\nHost: api.ouraring.com\nAuthorization: Bearer <token>\n```\nPlease note that personal access tokens were deprecated in December 2025 and are no longer available for use.\n# Oura HTTP Response Codes\n| Response Code                        | Description |\n| ------------------------------------ | - |\n| 200 OK                               | Successful Response         |\n| 400 Query Parameter Validation Error | The request contains query parameters that are invalid or incorrectly formatted. |\n| 401 Unauthorized                     | Invalid or expired authentication token. |\n| 403 Forbidden                        | The requested resource requires additional permissions or the user's Oura subscription has expired. |\n| 429 Too Many Requests                | Rate limit exceeded. See response headers for retry guidance. |\n\n## Rate Limits\nThe API enforces rate limits at two layers to ensure fair access across all applications:\n- a per-access-token limit, which throttles single-token floods, and\n- a per-application limit, which caps the aggregate traffic across all of an application's end-user tokens so one fan-out app can't dominate shared capacity.\n\nA request that trips either layer receives a `429 Too Many Requests`. The `X-RateLimit-Tier` response header identifies which layer fired.\n\nIf your application regularly approaches rate limits, [webhooks](#tag/Webhook-Subscription-Routes) are strongly recommended — most applications that implement webhooks correctly do not encounter rate limit issues.\n\n[Contact us](mailto:api-support@ouraring.com) if you expect your usage to require higher limits.\n\n## Rate Limit Response Headers\nWhen a `429 Too Many Requests` response is returned, five headers are included to guide retries. Prefer these over fixed-interval backoff:\n- **`Retry-After`** — integer seconds to wait before retrying. RFC 7231-compliant; safe to feed directly into your client's backoff logic.\n- **`X-RateLimit-Limit`** — the request ceiling for the current window.\n- **`X-RateLimit-Window`** — the rolling window length in seconds that the ceiling applies to.\n- **`X-RateLimit-Reset`** — Unix epoch (seconds) at which the window resets and quota is fully restored.\n- **`X-RateLimit-Tier`** — identifies which limit was exceeded, useful when contacting support.\n"
+  termsOfService: https://cloud.ouraring.com/legal/api-agreement
+  version: '2.0'
+  x-logo:
+    url: /v2/static/img/Oura_Logo-Developer_RBG_Black.svg
+servers:
+- url: https://api.ouraring.com
+  description: Oura API
+tags:
+- name: Sandbox Routes
+  description: Fake user data that you can access without an Oura account. There is a corresponding sandbox endpoint to each available data type. This is useful for testing and development purposes. The data is not real and should not be used for any production purposes. The data is generated by Oura and is not based on any real user data. The data is not updated in real-time and is not guaranteed to be accurate. The rate limit for the sandbox endpoints is shared with your rate limit on other data endpoints.
+paths:
+  /v2/sandbox/usercollection/tag:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Tag Documents
+      operationId: Sandbox___Multiple_tag_Documents_v2_sandbox_usercollection_tag_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_TagModel_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Tag Documents V2 Sandbox Usercollection Tag Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/tag?start_date=2021-11-01&end_date=2021-12-01'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/tag' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/tag?start_date=2021-11-01&end_date=2021-12-01', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/tag?start_date=2021-11-01&end_date=2021-12-01\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/enhanced_tag:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Enhanced Tag Documents
+      operationId: Sandbox___Multiple_enhanced_tag_Documents_v2_sandbox_usercollection_enhanced_tag_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_EnhancedTagModel_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Enhanced Tag Documents V2 Sandbox Usercollection Enhanced Tag Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/enhanced_tag?start_date=2021-11-01&end_date=2021-12-01'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/enhanced_tag' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/enhanced_tag?start_date=2021-11-01&end_date=2021-12-01', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/enhanced_tag?start_date=2021-11-01&end_date=2021-12-01\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/workout:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Workout Documents
+      operationId: Sandbox___Multiple_workout_Documents_v2_sandbox_usercollection_workout_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicWorkout_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Workout Documents V2 Sandbox Usercollection Workout Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/workout?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/workout' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/workout?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/workout?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/session:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Session Documents
+      operationId: Sandbox___Multiple_session_Documents_v2_sandbox_usercollection_session_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicSession_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Session Documents V2 Sandbox Usercollection Session Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/session?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/session' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/session?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/session?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_activity:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Daily Activity Documents
+      operationId: Sandbox___Multiple_daily_activity_Documents_v2_sandbox_usercollection_daily_activity_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicDailyActivity_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Daily Activity Documents V2 Sandbox Usercollection Daily Activity Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_activity?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_activity' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_activity?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_activity?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_sleep:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Daily Sleep Documents
+      operationId: Sandbox___Multiple_daily_sleep_Documents_v2_sandbox_usercollection_daily_sleep_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicDailySleep_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Daily Sleep Documents V2 Sandbox Usercollection Daily Sleep Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_sleep?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_sleep' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_sleep?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_sleep?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_spo2:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Daily Spo2 Documents
+      operationId: Sandbox___Multiple_daily_spo2_Documents_v2_sandbox_usercollection_daily_spo2_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicDailySpO2_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Daily Spo2 Documents V2 Sandbox Usercollection Daily Spo2 Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_spo2?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_spo2' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_spo2?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_spo2?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_readiness:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Daily Readiness Documents
+      operationId: Sandbox___Multiple_daily_readiness_Documents_v2_sandbox_usercollection_daily_readiness_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicDailyReadiness_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Daily Readiness Documents V2 Sandbox Usercollection Daily Readiness Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_readiness?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_readiness' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_readiness?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_readiness?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/sleep:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Sleep Documents
+      operationId: Sandbox___Multiple_sleep_Documents_v2_sandbox_usercollection_sleep_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicModifiedSleepModel_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Sleep Documents V2 Sandbox Usercollection Sleep Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/sleep?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/sleep' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/sleep?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/sleep?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/sleep_time:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Sleep Time Documents
+      operationId: Sandbox___Multiple_sleep_time_Documents_v2_sandbox_usercollection_sleep_time_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicSleepTime_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Sleep Time Documents V2 Sandbox Usercollection Sleep Time Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/sleep_time?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/sleep_time' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/sleep_time?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/sleep_time?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/rest_mode_period:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Rest Mode Period Documents
+      operationId: Sandbox___Multiple_rest_mode_period_Documents_v2_sandbox_usercollection_rest_mode_period_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicRestModePeriod_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Rest Mode Period Documents V2 Sandbox Usercollection Rest Mode Period Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/rest_mode_period?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/rest_mode_period' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/rest_mode_period?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/rest_mode_period?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/ring_configuration:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Ring Configuration Documents
+      operationId: Sandbox___Multiple_ring_configuration_Documents_v2_sandbox_usercollection_ring_configuration_get
+      parameters:
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicRingConfiguration_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Ring Configuration Documents V2 Sandbox Usercollection Ring Configuration Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/ring_configuration?fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/ring_configuration' \nparams = {'fields': 'day,score'}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/ring_configuration?fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/ring_configuration?fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_stress:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Daily Stress Documents
+      operationId: Sandbox___Multiple_daily_stress_Documents_v2_sandbox_usercollection_daily_stress_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicDailyStress_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Daily Stress Documents V2 Sandbox Usercollection Daily Stress Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_stress?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_stress' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_stress?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_stress?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_resilience:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Daily Resilience Documents
+      operationId: Sandbox___Multiple_daily_resilience_Documents_v2_sandbox_usercollection_daily_resilience_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_DailyResilienceModel_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Daily Resilience Documents V2 Sandbox Usercollection Daily Resilience Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_resilience?start_date=2021-11-01&end_date=2021-12-01'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_resilience' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_resilience?start_date=2021-11-01&end_date=2021-12-01', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_resilience?start_date=2021-11-01&end_date=2021-12-01\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_cardiovascular_age:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Daily Cardiovascular Age Documents
+      operationId: Sandbox___Multiple_daily_cardiovascular_age_Documents_v2_sandbox_usercollection_daily_cardiovascular_age_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicDailyCardiovascularAge_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Daily Cardiovascular Age Documents V2 Sandbox Usercollection Daily Cardiovascular Age Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_cardiovascular_age?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_cardiovascular_age' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_cardiovascular_age?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_cardiovascular_age?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/vO2_max:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Vo2 Max Documents
+      operationId: Sandbox___Multiple_vO2_max_Documents_v2_sandbox_usercollection_vO2_max_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicVO2Max_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Sandbox   Multiple Vo2 Max Documents V2 Sandbox Usercollection Vo2 Max Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/vO2_max?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/vO2_max' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/vO2_max?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/vO2_max?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/tag/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Tag Document
+      operationId: Sandbox___Single_tag_Document_v2_sandbox_usercollection_tag__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagModel'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/tag/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/tag/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/tag/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/tag/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/enhanced_tag/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Enhanced Tag Document
+      operationId: Sandbox___Single_enhanced_tag_Document_v2_sandbox_usercollection_enhanced_tag__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnhancedTagModel'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/enhanced_tag/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/enhanced_tag/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/enhanced_tag/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/enhanced_tag/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/workout/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Workout Document
+      operationId: Sandbox___Single_workout_Document_v2_sandbox_usercollection_workout__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicWorkout'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/workout/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/workout/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/workout/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/workout/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/session/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Session Document
+      operationId: Sandbox___Single_session_Document_v2_sandbox_usercollection_session__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicSession'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/session/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/session/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/session/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/session/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_activity/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Daily Activity Document
+      operationId: Sandbox___Single_daily_activity_Document_v2_sandbox_usercollection_daily_activity__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDailyActivity'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_activity/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_activity/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_activity/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_activity/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_sleep/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Daily Sleep Document
+      operationId: Sandbox___Single_daily_sleep_Document_v2_sandbox_usercollection_daily_sleep__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDailySleep'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_sleep/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_sleep/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_sleep/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_sleep/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_spo2/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Daily Spo2 Document
+      operationId: Sandbox___Single_daily_spo2_Document_v2_sandbox_usercollection_daily_spo2__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDailySpO2'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_spo2/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_spo2/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_spo2/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_spo2/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_readiness/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Daily Readiness Document
+      operationId: Sandbox___Single_daily_readiness_Document_v2_sandbox_usercollection_daily_readiness__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDailyReadiness'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_readiness/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_readiness/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_readiness/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_readiness/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/sleep/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Sleep Document
+      operationId: Sandbox___Single_sleep_Document_v2_sandbox_usercollection_sleep__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicModifiedSleepModel'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/sleep/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/sleep/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/sleep/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/sleep/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/sleep_time/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Sleep Time Document
+      operationId: Sandbox___Single_sleep_time_Document_v2_sandbox_usercollection_sleep_time__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicSleepTime'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/sleep_time/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/sleep_time/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/sleep_time/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/sleep_time/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/rest_mode_period/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Rest Mode Period Document
+      operationId: Sandbox___Single_rest_mode_period_Document_v2_sandbox_usercollection_rest_mode_period__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicRestModePeriod'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/rest_mode_period/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/rest_mode_period/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/rest_mode_period/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/rest_mode_period/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/ring_configuration/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Ring Configuration Document
+      operationId: Sandbox___Single_ring_configuration_Document_v2_sandbox_usercollection_ring_configuration__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicRingConfiguration'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/ring_configuration/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/ring_configuration/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/ring_configuration/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/ring_configuration/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_stress/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Daily Stress Document
+      operationId: Sandbox___Single_daily_stress_Document_v2_sandbox_usercollection_daily_stress__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDailyStress'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_stress/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_stress/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_stress/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_stress/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_resilience/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Daily Resilience Document
+      operationId: Sandbox___Single_daily_resilience_Document_v2_sandbox_usercollection_daily_resilience__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyResilienceModel'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_resilience/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_resilience/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_resilience/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_resilience/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/daily_cardiovascular_age/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Daily Cardiovascular Age Document
+      operationId: Sandbox___Single_daily_cardiovascular_age_Document_v2_sandbox_usercollection_daily_cardiovascular_age__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDailyCardiovascularAge'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/daily_cardiovascular_age/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/daily_cardiovascular_age/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/daily_cardiovascular_age/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/daily_cardiovascular_age/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/vO2_max/{document_id}:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Single Vo2 Max Document
+      operationId: Sandbox___Single_vO2_max_Document_v2_sandbox_usercollection_vO2_max__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicVO2Max'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/sandbox/usercollection/vO2_max/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/vO2_max/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/vO2_max/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/vO2_max/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/heartrate:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Heartrate Documents
+      operationId: Sandbox___Multiple_heartrate_Documents_v2_sandbox_usercollection_heartrate_get
+      parameters:
+      - name: start_datetime
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+          title: Start Datetime
+      - name: end_datetime
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+          title: End Datetime
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/TimeSeriesResponse_PublicHeartRateRow_'
+                - $ref: '#/components/schemas/TimeSeriesResponseDict'
+                title: Response Sandbox   Multiple Heartrate Documents V2 Sandbox Usercollection Heartrate Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "# The '+' symbol in the timezone must be escaped to `%2B` if included. \ncurl --location --request GET 'https://api.ouraring.com/v2/sandbox/usercollection/heartrate?start_datetime=2021-11-01T00:00:00-08:00&end_datetime=2021-12-01T00:00:00-08:00&fields=timestamp,bpm' \\ \n--header 'Authorization: Bearer <token>'"
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/heartrate' \nparams={ \n    'start_datetime': '2021-11-01T00:00:00-08:00', \n    'end_datetime': '2021-12-01T00:00:00-08:00',\n    'fields': 'timestamp,bpm' \n} \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/heartrate?start_datetime=2021-11-01T00:00:00-08:00&end_datetime=2021-12-01T00:00:00-08:00&fields=timestamp,bpm', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/heartrate?start_datetime=2021-11-01T00:00:00-08:00&end_datetime=2021-12-01T00:00:00-08:00&fields=timestamp,bpm\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/sandbox/usercollection/ring_battery_level:
+    get:
+      tags:
+      - Sandbox Routes
+      summary: Sandbox - Multiple Ring Battery Level Documents
+      operationId: Sandbox___Multiple_ring_battery_level_Documents_v2_sandbox_usercollection_ring_battery_level_get
+      parameters:
+      - name: start_datetime
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+          title: Start Datetime
+      - name: end_datetime
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+          title: End Datetime
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/TimeSeriesResponse_PublicRingBatteryLevelRow_'
+                - $ref: '#/components/schemas/TimeSeriesResponseDict'
+                title: Response Sandbox   Multiple Ring Battery Level Documents V2 Sandbox Usercollection Ring Battery Level Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "# The '+' symbol in the timezone must be escaped to `%2B` if included. \ncurl --location --request GET 'https://api.ouraring.com/v2/sandbox/usercollection/ring_battery_level?start_datetime=2021-11-01T00:00:00-08:00&end_datetime=2021-12-01T00:00:00-08:00&fields=timestamp,bpm' \\ \n--header 'Authorization: Bearer <token>'"
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/sandbox/usercollection/ring_battery_level' \nparams={ \n    'start_datetime': '2021-11-01T00:00:00-08:00', \n    'end_datetime': '2021-12-01T00:00:00-08:00',\n    'fields': 'timestamp,bpm' \n} \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/sandbox/usercollection/ring_battery_level?start_datetime=2021-11-01T00:00:00-08:00&end_datetime=2021-12-01T00:00:00-08:00&fields=timestamp,bpm', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/sandbox/usercollection/ring_battery_level?start_datetime=2021-11-01T00:00:00-08:00&end_datetime=2021-12-01T00:00:00-08:00&fields=timestamp,bpm\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+components:
+  schemas:
+    MultiDocumentResponse_DailyResilienceModel_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/DailyResilienceModel'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[DailyResilienceModel]
+    PublicSample:
+      properties:
+        interval:
+          type: number
+          title: ''
+          description: Interval in seconds between the sampled items.
+        items:
+          $ref: '#/components/schemas/Array_Union_float__NoneType__Bits64_'
+          title: ''
+          description: Recorded sample items.
+        timestamp:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp when the sample recording started.
+      type: object
+      required:
+      - interval
+      - items
+      - timestamp
+      title: PublicSample
+      description: Object defining a recorded sample.
+    MultiDocumentResponse_PublicRestModePeriod_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicRestModePeriod'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicRestModePeriod]
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    LongTermResilienceLevel:
+      type: string
+      enum:
+      - limited
+      - adequate
+      - solid
+      - strong
+      - exceptional
+      title: LongTermResilienceLevel
+      description: Possible long term resilience level values.
+    MultiDocumentResponse_TagModel_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/TagModel'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[TagModel]
+    PublicVO2Max:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day that the estimate belongs to.
+        timestamp:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp indicating when the estimate was created.
+        vo2_max:
+          type: integer
+          title: ''
+          description: VO2 max value.
+      type: object
+      required:
+      - id
+      - day
+      - timestamp
+      - vo2_max
+      title: PublicVO2Max
+      description: VO2Max estimate.
+      x-cloud-only: true
+      x-collection: publicvo2max
+      x-owner: movement-squad
+    PublicRestModeEpisode:
+      properties:
+        tags:
+          items:
+            type: string
+          type: array
+          title: ''
+          description: Tags selected for the episode.
+        timestamp:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp indicating when the episode occurred.
+      type: object
+      required:
+      - tags
+      - timestamp
+      title: PublicRestModeEpisode
+      description: Object defining a public Rest Mode episode.
+    PublicDailyCardiovascularAge:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day that the prediction belongs to.
+        pulse_wave_velocity:
+          type: number
+          nullable: true
+          title: ''
+          description: Pulse wave velocity (m/s), derived from vascular age, with possible offset added.
+        vascular_age:
+          type: integer
+          nullable: true
+          title: ''
+          description: Predicted vascular age in range [18, 100].
+      type: object
+      required:
+      - id
+      - day
+      title: PublicDailyCardiovascularAge
+      description: Daily Cardiovascular Age.
+      x-cloud-only: true
+      x-collection: publicdailycardiovascularage
+      x-owner: heart-health-squad
+    PublicRingDesign:
+      type: string
+      enum:
+      - heritage
+      - balance
+      - balance_diamond
+      - horizon
+      - ceramic
+      title: PublicRingDesign
+      description: Possible ring designs.
+    PublicModifiedSleepModel:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        average_breath:
+          type: number
+          nullable: true
+          title: ''
+          description: Average breathing rate during sleep as breaths/minute.
+        average_heart_rate:
+          type: number
+          nullable: true
+          title: ''
+          description: 'Average heart rate during sleep as beats/minute. NOTE: this is the average calculated by ecore (based on 30-second samples) which is different from what is shown in the app. The app shows the average of aggregated 5-minute heart rate samples.'
+        average_hrv:
+          type: integer
+          nullable: true
+          title: ''
+          description: Average heart rate variability during sleep.
+        awake_time:
+          type: integer
+          nullable: true
+          title: ''
+          description: Duration spent awake in seconds.
+        bedtime_end:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Bedtime end of the sleep.
+        bedtime_start:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Bedtime start of the sleep.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day that the sleep belongs to.
+        deep_sleep_duration:
+          type: integer
+          nullable: true
+          title: ''
+          description: Duration spent in deep sleep in seconds.
+        efficiency:
+          type: integer
+          nullable: true
+          title: ''
+          description: Sleep efficiency rating in range [1, 100].
+        heart_rate:
+          $ref: '#/components/schemas/PublicSample'
+          nullable: true
+          title: ''
+          description: Object containing heart rate samples.
+        hrv:
+          $ref: '#/components/schemas/PublicSample'
+          nullable: true
+          title: ''
+          description: Object containing heart rate variability samples.
+        latency:
+          type: integer
+          nullable: true
+          title: ''
+          description: Sleep latency in seconds. This is the time it took for the user to fall asleep after going to bed.
+        light_sleep_duration:
+          type: integer
+          nullable: true
+          title: ''
+          description: Duration spent in light sleep in seconds.
+        low_battery_alert:
+          type: boolean
+          title: ''
+          description: Flag indicating if a low battery alert occurred.
+        lowest_heart_rate:
+          type: integer
+          nullable: true
+          title: ''
+          description: 'Lowest heart rate during sleep. NOTE: this is the value calculated by ecore (based on 30-second samples) which is different from what is shown in the app. The app shows the minimum of aggregated 5-minute heart rate samples.'
+        movement_30_sec:
+          type: string
+          nullable: true
+          title: ''
+          description: '30-second movement classification for the period where every character corresponds to:
+
+            ''1'' = no motion,
+
+            ''2'' = restless,
+
+            ''3'' = tossing and turning
+
+            ''4'' = active
+
+            Example: "1143222134".'
+        period:
+          type: integer
+          title: ''
+          description: ECore sleep period identifier.
+        readiness:
+          $ref: '#/components/schemas/PublicReadiness'
+          nullable: true
+          title: ''
+          description: Object containing the readiness details.
+        readiness_score_delta:
+          type: integer
+          nullable: true
+          title: ''
+          description: Effect on readiness score caused by this sleep period.
+        rem_sleep_duration:
+          type: integer
+          nullable: true
+          title: ''
+          description: Duration spent in REM sleep in seconds.
+        restless_periods:
+          type: integer
+          nullable: true
+          title: ''
+          description: Number of restless periods during sleep.
+        sleep_algorithm_version:
+          $ref: '#/components/schemas/PublicSleepAlgorithmVersion'
+          nullable: true
+          title: ''
+          description: Version of the sleep algorithm used to calculate the sleep data.
+        sleep_analysis_reason:
+          $ref: '#/components/schemas/PublicSleepAnalysisReason'
+          nullable: true
+          title: ''
+          description: The reason for the creation or update of the latest version of this sleep.
+        sleep_phase_30_sec:
+          type: string
+          nullable: true
+          title: ''
+          description: '30-second sleep phase classification for the period where every character corresponds to:
+
+            ''1'' = deep sleep,
+
+            ''2'' = light sleep,
+
+            ''3'' = REM sleep
+
+            ''4'' = awake.
+
+            Example: "444423323441114".'
+        sleep_phase_5_min:
+          type: string
+          nullable: true
+          title: ''
+          description: '5-minute sleep phase classification for the period where every character corresponds to:
+
+            ''1'' = deep sleep,
+
+            ''2'' = light sleep,
+
+            ''3'' = REM sleep
+
+            ''4'' = awake.
+
+            Example: "444423323441114".'
+        sleep_score_delta:
+          type: integer
+          nullable: true
+          title: ''
+          description: Effect on sleep score caused by this sleep period.
+        time_in_bed:
+          type: integer
+          title: ''
+          description: Duration spent in bed in seconds.
+        total_sleep_duration:
+          type: integer
+          nullable: true
+          title: ''
+          description: Total sleep duration in seconds.
+        type:
+          $ref: '#/components/schemas/PublicSleepType'
+          nullable: true
+          title: ''
+          description: Type of the sleep period.
+        ring_id:
+          type: string
+          nullable: true
+          title: Ring Id
+          description: Encrypted identifier of the ring that produced this sleep data.
+        app_sleep_phase_5_min:
+          type: string
+          nullable: true
+          title: App Sleep Phase 5 Min
+          description: "\n        5-minute sleep phase classification for the period aligned with what is shown in the app\n        where every character corresponds to:\n        '1' = deep sleep,\n        '2' = light sleep,\n        '3' = REM sleep\n        '4' = awake.\n        Example: \"444423323441114\".\n        NOTE: This field will be removed in the future after a transition period.\n        "
+      type: object
+      required:
+      - id
+      - bedtime_end
+      - bedtime_start
+      - day
+      - low_battery_alert
+      - period
+      - time_in_bed
+      title: PublicModifiedSleepModel
+      x-cloud-only: true
+      x-collection: publicsleepmodel
+      x-owner: sleep-squad
+    MultiDocumentResponseDict:
+      properties:
+        data:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponseDict
+    MultiDocumentResponse_PublicDailyStress_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicDailyStress'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicDailyStress]
+    PublicRingColor:
+      type: string
+      enum:
+      - brushed_silver
+      - glossy_black
+      - glossy_gold
+      - glossy_white
+      - gucci
+      - matt_gold
+      - rose
+      - silver
+      - stealth_black
+      - titanium
+      - titanium_and_gold
+      - cloud
+      - petal
+      - midnight
+      - tide
+      title: PublicRingColor
+      description: Possible ring colors.
+    PublicHeartRateSource:
+      type: string
+      enum:
+      - awake
+      - workout
+      - rest
+      - sleep
+      - live
+      - session
+      title: PublicHeartRateSource
+      description: Possible heart rate sources.
+    PublicReadiness:
+      properties:
+        contributors:
+          $ref: '#/components/schemas/PublicReadinessContributors'
+          title: ''
+          description: Contributors of the readiness score.
+        score:
+          type: integer
+          nullable: true
+          title: ''
+          description: Readiness score in range [1, 100].
+        temperature_deviation:
+          type: number
+          nullable: true
+          title: ''
+          description: Temperature deviation in degrees Celsius.
+        temperature_trend_deviation:
+          type: number
+          nullable: true
+          title: ''
+          description: Temperature trend deviation in degrees Celsius.
+      type: object
+      required:
+      - contributors
+      title: PublicReadiness
+      description: Object defining readiness.
+    MultiDocumentResponse_PublicWorkout_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicWorkout'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicWorkout]
+    PublicRingConfiguration:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        color:
+          $ref: '#/components/schemas/PublicRingColor'
+          nullable: true
+          title: ''
+          description: Color of the ring.
+        design:
+          $ref: '#/components/schemas/PublicRingDesign'
+          nullable: true
+          title: ''
+          description: Design of the ring.
+        firmware_version:
+          type: string
+          nullable: true
+          title: ''
+          description: Firmware version of the ring.
+        hardware_type:
+          $ref: '#/components/schemas/PublicRingHardwareType'
+          nullable: true
+          title: ''
+          description: Hardware type of the ring.
+        set_up_at:
+          $ref: '#/components/schemas/UtcDateTime'
+          nullable: true
+          title: ''
+          description: UTC timestamp indicating when the ring was set up.
+        size:
+          type: integer
+          nullable: true
+          title: ''
+          description: US size of the ring.
+      type: object
+      required:
+      - id
+      title: PublicRingConfiguration
+      description: Ring configuration.
+      x-cloud-only: true
+      x-collection: publicringconfiguration
+      x-owner: connectivity-squad
+    PublicActivityContributors:
+      properties:
+        meet_daily_targets:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of meeting previous 7-day daily activity targets in range [1, 100].
+        move_every_hour:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of previous 24-hour inactivity alerts in range [1, 100].
+        recovery_time:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of previous 7-day recovery time in range [1, 100].
+        stay_active:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of previous 24-hour activity in range [1, 100].
+        training_frequency:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of previous 7-day exercise frequency in range [1, 100].
+        training_volume:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of previous 7-day exercise volume in range [1, 100].
+      type: object
+      title: PublicActivityContributors
+      description: Object defining activity score contributors.
+    UtcDateTime:
+      type: string
+    TimeSeriesResponse_PublicHeartRateRow_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicHeartRateRow'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      title: TimeSeriesResponse[PublicHeartRateRow]
+    PublicSpo2AggregatedValues:
+      properties:
+        average:
+          type: number
+          title: ''
+          description: Average of spo2.
+      type: object
+      required:
+      - average
+      title: PublicSpo2AggregatedValues
+      description: Object defining public spo2 aggregated values.
+    LocalizedDateTime:
+      type: string
+    DailyResilienceModel:
+      properties:
+        id:
+          type: string
+          title: Id
+        day:
+          type: string
+          format: date
+          title: Day
+          description: Day when the resilience record was recorded.
+        contributors:
+          $ref: '#/components/schemas/ResilienceContributors'
+          description: Contributors to the resilience score.
+        level:
+          $ref: '#/components/schemas/LongTermResilienceLevel'
+          description: Resilience level.
+      type: object
+      required:
+      - id
+      - day
+      - contributors
+      - level
+      title: DailyResilienceModel
+    PublicSleepTimeWindow:
+      properties:
+        day_tz:
+          type: integer
+          title: ''
+          description: Timezone offset in second from GMT of the day
+        end_offset:
+          type: integer
+          title: ''
+          description: End offset from midnight in second
+        start_offset:
+          type: integer
+          title: ''
+          description: Start offset from midnight in second
+      type: object
+      required:
+      - day_tz
+      - end_offset
+      - start_offset
+      title: PublicSleepTimeWindow
+      description: Object defining sleep time window
+    PublicRingBatteryLevelRow:
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/UtcDateTime'
+          title: ''
+          description: Timestamp of the discrete sample.
+        timestamp_unix:
+          type: integer
+          title: ''
+          description: Timestamp of the discrete sample as unix time in milliseconds.
+        charging:
+          type: boolean
+          nullable: true
+          title: ''
+          description: Flag indicating if the ring was charging.
+        in_charger:
+          type: boolean
+          nullable: true
+          title: ''
+          description: Flag indicating if the ring was in charger.
+        level:
+          type: integer
+          title: ''
+          description: Ring battery level percentage. These values are within [0, 100].
+      type: object
+      required:
+      - timestamp
+      - timestamp_unix
+      - level
+      title: PublicRingBatteryLevelRow
+      description: Object defining a ring battery level event.
+      x-cloud-only: true
+      x-collection: publicringbatterylevel
+      x-owner: connectivity-squad
+    MultiDocumentResponse_PublicDailyReadiness_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicDailyReadiness'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicDailyReadiness]
+    PublicRestModePeriod:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        end_day:
+          $ref: '#/components/schemas/ISODate'
+          nullable: true
+          title: ''
+          description: End date of rest mode.
+        end_time:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          nullable: true
+          title: ''
+          description: Timestamp when rest mode ended.
+        episodes:
+          items:
+            $ref: '#/components/schemas/PublicRestModeEpisode'
+          type: array
+          title: ''
+          description: Collection of episodes during rest mode, consisting of tags.
+        start_day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Start date of rest mode.
+        start_time:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          nullable: true
+          title: ''
+          description: Timestamp when rest mode ended.
+      type: object
+      required:
+      - id
+      - episodes
+      - start_day
+      title: PublicRestModePeriod
+      description: Rest mode episode information.
+      x-cloud-only: true
+      x-collection: publicrestmodeperiod
+      x-owner: sleep-squad
+    PublicSleepAlgorithmVersion:
+      type: string
+      enum:
+      - v1
+      - v2
+      title: PublicSleepAlgorithmVersion
+      description: 'Oura Sleep Staging Algorithms.
+
+        v1 = original aka legacy aka OSSA 1.0,
+
+        v2 = latest sleep algorithm'
+    PublicDailyReadiness:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        contributors:
+          $ref: '#/components/schemas/PublicReadinessContributors'
+          title: ''
+          description: Contributors of the daily readiness score.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day that the daily readiness belongs to.
+        score:
+          type: integer
+          nullable: true
+          title: ''
+          description: Daily readiness score.
+        temperature_deviation:
+          type: number
+          nullable: true
+          title: ''
+          description: Temperature deviation in degrees Celsius.
+        temperature_trend_deviation:
+          type: number
+          nullable: true
+          title: ''
+          description: Temperature trend deviation in degrees Celsius.
+        timestamp:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp of the daily readiness.
+      type: object
+      required:
+      - id
+      - contributors
+      - day
+      - timestamp
+      title: PublicDailyReadiness
+      description: Public object defining daily readiness.
+      x-cloud-only: true
+      x-collection: publicdailyreadiness
+      x-owner: wellbeing-squad
+    PublicSleepTimeRecommendation:
+      type: string
+      enum:
+      - improve_efficiency
+      - earlier_bedtime
+      - later_bedtime
+      - earlier_wake_up_time
+      - later_wake_up_time
+      - follow_optimal_bedtime
+      title: PublicSleepTimeRecommendation
+      description: Possible public SleepTime recommendation.
+    PublicMomentMood:
+      type: string
+      enum:
+      - bad
+      - worse
+      - same
+      - good
+      - great
+      title: PublicMomentMood
+      description: Possible Moment moods.
+    MultiDocumentResponse_PublicSession_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicSession'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicSession]
+    MultiDocumentResponse_PublicDailyActivity_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicDailyActivity'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicDailyActivity]
+    MultiDocumentResponse_PublicSleepTime_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicSleepTime'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicSleepTime]
+    TagModel:
+      properties:
+        id:
+          type: string
+          title: Id
+        day:
+          type: string
+          format: date
+          title: Day
+          description: Day that the note belongs to.
+        text:
+          type: string
+          nullable: true
+          title: Text
+          description: Textual contents of the note.
+        timestamp:
+          $ref: '#/components/schemas/LocalDateTime'
+          description: Timestamp of the note.
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          description: Selected tags for the tag.
+      type: object
+      required:
+      - id
+      - day
+      - text
+      - timestamp
+      - tags
+      title: TagModel
+      description: 'A TagModel maps to an ASSANote. An ASSANote in ExtAPIV2 is called a Tag
+
+        A TagModel will be populated by data from an ASSANote
+
+        The fields in the TagModel map to fields in an ASSANote'
+    ResilienceContributors:
+      properties:
+        sleep_recovery:
+          type: number
+          title: Sleep Recovery
+          description: 'Sleep recovery contributor to the resilience score. Range: [0, 100]'
+        daytime_recovery:
+          type: number
+          title: Daytime Recovery
+          description: 'Daytime recovery contributor to the resilience score. Range: [0, 100]'
+        stress:
+          type: number
+          title: Stress
+          description: 'Stress contributor to the resilience score. Range: [0, 100]'
+      type: object
+      required:
+      - sleep_recovery
+      - daytime_recovery
+      - stress
+      title: ResilienceContributors
+    PublicSleepTimeStatus:
+      type: string
+      enum:
+      - not_enough_nights
+      - not_enough_recent_nights
+      - bad_sleep_quality
+      - only_recommended_found
+      - optimal_found
+      title: PublicSleepTimeStatus
+      description: Possible public SleepTime status.
+    PublicSleepTime:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Corresponding day for the sleep time.
+        optimal_bedtime:
+          $ref: '#/components/schemas/PublicSleepTimeWindow'
+          nullable: true
+          title: ''
+          description: Optimal bedtime.
+        recommendation:
+          $ref: '#/components/schemas/PublicSleepTimeRecommendation'
+          nullable: true
+          title: ''
+          description: Recommended action for bedtime.
+        status:
+          $ref: '#/components/schemas/PublicSleepTimeStatus'
+          nullable: true
+          title: ''
+          description: Sleep time status; used to inform sleep time recommendation.
+      type: object
+      required:
+      - id
+      - day
+      title: PublicSleepTime
+      description: Suggested bedtime for the user.
+      x-cloud-only: true
+      x-collection: publicsleeptime
+      x-owner: sleep-squad
+    PublicWorkoutIntensity:
+      type: string
+      enum:
+      - easy
+      - moderate
+      - hard
+      title: PublicWorkoutIntensity
+      description: Possible workout intensities.
+    MultiDocumentResponse_PublicModifiedSleepModel_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicModifiedSleepModel'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicModifiedSleepModel]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PublicDailyStressSummary:
+      type: string
+      enum:
+      - restored
+      - normal
+      - stressful
+      title: PublicDailyStressSummary
+      description: Possible public daily stress summary types.
+    PublicReadinessContributors:
+      properties:
+        activity_balance:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of cumulative activity balance in range [1, 100].
+        body_temperature:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of body temperature in range [1, 100].
+        hrv_balance:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of heart rate variability balance in range [1, 100].
+        previous_day_activity:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of previous day's activity in range [1, 100].
+        previous_night:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of previous night's sleep in range [1, 100].
+        recovery_index:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of recovery index in range [1, 100].
+        resting_heart_rate:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of resting heart rate in range [1, 100].
+        sleep_balance:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of sleep balance in range [1, 100].
+        sleep_regularity:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of sleep regularity in range [1, 100].
+      type: object
+      title: PublicReadinessContributors
+      description: Object defining readiness score contributors.
+    Array_Union_float__NoneType__Bits64_:
+      items:
+        type: number
+        nullable: true
+      type: array
+      title: ArrayNullableFloatBits64
+    PublicMomentType:
+      type: string
+      enum:
+      - breathing
+      - meditation
+      - nap
+      - relaxation
+      - rest
+      - body_status
+      title: PublicMomentType
+      description: Possible Moment types.
+    PublicDailySleep:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        contributors:
+          $ref: '#/components/schemas/PublicSleepContributors'
+          title: ''
+          description: Contributors for the daily sleep score.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day that the daily sleep belongs to.
+        score:
+          type: integer
+          nullable: true
+          title: ''
+          description: Daily sleep score.
+        timestamp:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp of the daily sleep.
+      type: object
+      required:
+      - id
+      - contributors
+      - day
+      - timestamp
+      title: PublicDailySleep
+      description: Public object defining daily sleep.
+      x-cloud-only: true
+      x-collection: publicdailysleep
+      x-owner: sleep-squad
+    TimeSeriesResponse_PublicRingBatteryLevelRow_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicRingBatteryLevelRow'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      title: TimeSeriesResponse[PublicRingBatteryLevelRow]
+    PublicSleepAnalysisReason:
+      type: string
+      enum:
+      - foreground_sleep_analysis
+      - bedtime_edit
+      title: PublicSleepAnalysisReason
+      description: Possible sleep analysis reasons.
+    PublicDailyActivity:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        active_calories:
+          type: integer
+          title: ''
+          description: Active calories expended in kilocalories.
+        average_met_minutes:
+          type: number
+          title: ''
+          description: Average MET minutes.
+        class_5_min:
+          type: string
+          nullable: true
+          title: ''
+          description: '5-minute activity classification for the period where every character corresponds to:
+
+            ''0'' = non wear
+
+            ''1'' = rest
+
+            ''2'' = inactive
+
+            ''3'' = low activity
+
+            ''4'' = medium activity
+
+            ''5'' = high activity
+
+            Example: "001233334555524001".'
+        contributors:
+          $ref: '#/components/schemas/PublicActivityContributors'
+          title: ''
+          description: Object containing activity score contributors.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day that the daily activity belong to.
+        equivalent_walking_distance:
+          type: integer
+          title: ''
+          description: Equivalent walking distance of energe expenditure in meters.
+        high_activity_met_minutes:
+          type: integer
+          title: ''
+          description: The total METs of each minute classified as high activity.
+        high_activity_time:
+          type: integer
+          title: ''
+          description: The total time in seconds of each minute classified as high activity.
+        inactivity_alerts:
+          type: integer
+          title: ''
+          description: Number of inactivity alerts received.
+        low_activity_met_minutes:
+          type: integer
+          title: ''
+          description: The total METs of each minute classified as low activity.
+        low_activity_time:
+          type: integer
+          title: ''
+          description: The total time in seconds of each minute classified as low activity.
+        medium_activity_met_minutes:
+          type: integer
+          title: ''
+          description: The total METs of each minute classified as medium activity.
+        medium_activity_time:
+          type: integer
+          title: ''
+          description: The total time in seconds of each minute classified as medium activity.
+        met:
+          $ref: '#/components/schemas/PublicSample'
+          title: ''
+          description: Sample containing METs.
+        meters_to_target:
+          type: integer
+          title: ''
+          description: Meters remaining to target.
+        non_wear_time:
+          type: integer
+          title: ''
+          description: Ring non-wear time in seconds.
+        resting_time:
+          type: integer
+          title: ''
+          description: Resting time in seconds.
+        score:
+          type: integer
+          nullable: true
+          title: ''
+          description: Activity score in range [1, 100].
+        sedentary_met_minutes:
+          type: integer
+          title: ''
+          description: Sedentary MET minutes.
+        sedentary_time:
+          type: integer
+          title: ''
+          description: Sedentary time in seconds.
+        steps:
+          type: integer
+          title: ''
+          description: Total number of steps taken.
+        target_calories:
+          type: integer
+          title: ''
+          description: Daily activity target in kilocalories.
+        target_meters:
+          type: integer
+          title: ''
+          description: Daily activity target in meters.
+        timestamp:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp of the daily activity.
+        total_calories:
+          type: integer
+          title: ''
+          description: Total calories expended in kilocalories.
+      type: object
+      required:
+      - id
+      - active_calories
+      - average_met_minutes
+      - contributors
+      - day
+      - equivalent_walking_distance
+      - high_activity_met_minutes
+      - high_activity_time
+      - inactivity_alerts
+      - low_activity_met_minutes
+      - low_activity_time
+      - medium_activity_met_minutes
+      - medium_activity_time
+      - met
+      - meters_to_target
+      - non_wear_time
+      - resting_time
+      - sedentary_met_minutes
+      - sedentary_time
+      - steps
+      - target_calories
+      - target_meters
+      - timestamp
+      - total_calories
+      title: PublicDailyActivity
+      description: Object defining a daily activity that is a 24-hour period starting at 4 a.m.
+      x-cloud-only: true
+      x-collection: publicdailyactivity
+      x-owner: movement-squad
+    PublicDailyStress:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day that the daily stress belongs to.
+        day_summary:
+          $ref: '#/components/schemas/PublicDailyStressSummary'
+          nullable: true
+          title: ''
+          description: Stress summary of full day.
+        recovery_high:
+          type: integer
+          nullable: true
+          title: ''
+          description: Time spent in a high recovery zone (bottom quartile data) in seconds.
+        stress_high:
+          type: integer
+          nullable: true
+          title: ''
+          description: Time spent in a high stress zone (top quartile of data) in seconds.
+      type: object
+      required:
+      - id
+      - day
+      title: PublicDailyStress
+      description: Daily stress.
+      x-cloud-only: true
+      x-collection: publicdailystress
+      x-owner: wellbeing-squad
+    LocalDateTime:
+      type: string
+    TimeSeriesResponseDict:
+      properties:
+        data:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      title: TimeSeriesResponseDict
+    PublicWorkout:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        activity:
+          type: string
+          title: ''
+          description: Type of the workout activity.
+        calories:
+          type: number
+          nullable: true
+          title: ''
+          description: Energy burned in kilocalories during the workout.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day when the workout occurred.
+        distance:
+          type: number
+          nullable: true
+          title: ''
+          description: Distance traveled in meters during the workout.
+        end_datetime:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp indicating when the workout ended.
+        intensity:
+          $ref: '#/components/schemas/PublicWorkoutIntensity'
+          title: ''
+          description: Intensity of the workout.
+        label:
+          type: string
+          nullable: true
+          title: ''
+          description: User-defined label for the workout.
+        source:
+          $ref: '#/components/schemas/PublicWorkoutSource'
+          title: ''
+          description: Possible workout sources.
+        start_datetime:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp indicating when the workout started.
+      type: object
+      required:
+      - id
+      - activity
+      - day
+      - end_datetime
+      - intensity
+      - source
+      - start_datetime
+      title: PublicWorkout
+      description: Public model for Workout.
+      x-cloud-only: true
+      x-collection: publicworkout
+      x-owner: movement-squad
+    PublicSleepType:
+      type: string
+      enum:
+      - deleted
+      - sleep
+      - long_sleep
+      - late_nap
+      - rest
+      title: PublicSleepType
+      description: 'Possible sleep period types.
+
+        ''deleted'' = deleted sleep by user.
+
+        ''sleep'' = user confirmed sleep / nap, min 15 minutes, max 3 hours, contributes to daily scores
+
+        ''late_nap'' = user confirmed sleep / nap, min 15 minutes, ended after sleep day change (6 pm), contributes to next days daily scores
+
+        ''long_sleep'' = sleep that is long enough (>3h) to automatically contribute to daily scores
+
+        ''rest'' = Falsely detected sleep / nap, rejected in confirm prompt by user'
+    ISODate:
+      type: string
+    MultiDocumentResponse_PublicDailySpO2_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicDailySpO2'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicDailySpO2]
+    MultiDocumentResponse_PublicDailySleep_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicDailySleep'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicDailySleep]
+    MultiDocumentResponse_PublicDailyCardiovascularAge_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicDailyCardiovascularAge'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicDailyCardiovascularAge]
+    MultiDocumentResponse_PublicVO2Max_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicVO2Max'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicVO2Max]
+    PublicSleepContributors:
+      properties:
+        deep_sleep:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of deep sleep in range [1, 100].
+        efficiency:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of sleep efficiency in range [1, 100].
+        latency:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of sleep latency in range [1, 100].
+        rem_sleep:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of REM sleep in range [1, 100].
+        restfulness:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of sleep restfulness in range [1, 100].
+        timing:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of sleep timing in range [1, 100].
+        total_sleep:
+          type: integer
+          nullable: true
+          title: ''
+          description: Contribution of total sleep in range [1, 100].
+      type: object
+      title: PublicSleepContributors
+      description: Object defining sleep score contributors.
+    MultiDocumentResponse_PublicRingConfiguration_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicRingConfiguration'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicRingConfiguration]
+    PublicDailySpO2:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        breathing_disturbance_index:
+          type: integer
+          nullable: true
+          title: ''
+          description: Breathing Disturbance Index (BDI) calculated using detected SpO2 drops from timeseries. Values should be in range [0, 100]
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day that the spo2 values belong to.
+        spo2_percentage:
+          $ref: '#/components/schemas/PublicSpo2AggregatedValues'
+          nullable: true
+          title: ''
+          description: The daily SpO2 percentage value aggregates. Sourced from SpO2 percentage timeseries values.
+      type: object
+      required:
+      - id
+      - day
+      title: PublicDailySpO2
+      description: Daily SpO2 (Oxygen saturation).
+      x-cloud-only: true
+      x-collection: publicdailyspo2
+      x-owner: sleep-squad
+    PublicSession:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: The date when the session occurred.
+        end_datetime:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp indicating when the Moment ended.
+        heart_rate:
+          $ref: '#/components/schemas/PublicSample'
+          nullable: true
+          title: ''
+          description: Recorded heart rate samples during the Moment.
+        heart_rate_variability:
+          $ref: '#/components/schemas/PublicSample'
+          nullable: true
+          title: ''
+          description: Recorded heart rate variability samples during the Moment.
+        mood:
+          $ref: '#/components/schemas/PublicMomentMood'
+          nullable: true
+          title: ''
+          description: User-selected mood for the Moment.
+        motion_count:
+          $ref: '#/components/schemas/PublicSample'
+          nullable: true
+          title: ''
+          description: Recorded motion count samples during the Moment.
+        start_datetime:
+          $ref: '#/components/schemas/LocalizedDateTime'
+          title: ''
+          description: Timestamp indicating when the Moment started.
+        type:
+          $ref: '#/components/schemas/PublicMomentType'
+          title: ''
+          description: Type of the Moment.
+      type: object
+      required:
+      - id
+      - day
+      - end_datetime
+      - start_datetime
+      - type
+      title: PublicSession
+      description: Public model defining a recorded Session.
+      x-cloud-only: true
+      x-collection: publicsession
+      x-owner: wellbeing-squad
+    EnhancedTagModel:
+      properties:
+        id:
+          type: string
+          title: Id
+        tag_type_code:
+          type: string
+          nullable: true
+          title: Tag Type Code
+          description: The unique code of the selected tag type, `NULL` for text-only tags, or `custom` for custom tag types.
+        start_time:
+          $ref: '#/components/schemas/LocalDateTime'
+          description: Timestamp of the tag (if no duration) or the start time of the tag (with duration).
+        end_time:
+          $ref: '#/components/schemas/LocalDateTime'
+          nullable: true
+          description: Timestamp of the tag's end for events with duration or `NULL` if there is no duration.
+        start_day:
+          type: string
+          format: date
+          title: Start Day
+          description: Day of the tag (if no duration) or the start day of the tag (with duration).
+        end_day:
+          type: string
+          format: date
+          nullable: true
+          title: End Day
+          description: Day of the tag's end for events with duration or `NULL` if there is no duration.
+        comment:
+          type: string
+          nullable: true
+          title: Comment
+          description: Additional freeform text on the tag.
+        custom_name:
+          type: string
+          nullable: true
+          title: Custom Name
+          description: The name of the tag if the tag_type_code is `custom`.
+      type: object
+      required:
+      - id
+      - start_time
+      - start_day
+      title: EnhancedTagModel
+      description: 'An EnhancedTagModel maps an ASSATag. An ASSATag in ExtAPIV2 is called a EnhancedTag
+
+        An EnhancedTagModel will be populated by data from an ASSATag
+
+        The fields in the EnhancedTagModel map to fields in an ASSATag'
+    PublicHeartRateRow:
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/UtcDateTime'
+          title: ''
+          description: Timestamp of the discrete sample.
+        timestamp_unix:
+          type: integer
+          title: ''
+          description: Timestamp of the discrete sample as unix time in milliseconds.
+        bpm:
+          type: integer
+          title: ''
+          description: Heart rate as beats per minute.
+        source:
+          $ref: '#/components/schemas/PublicHeartRateSource'
+          title: ''
+          description: Source of the sample.
+      type: object
+      required:
+      - timestamp
+      - timestamp_unix
+      - bpm
+      - source
+      title: PublicHeartRateRow
+      description: Heart rate sample
+      x-cloud-only: true
+      x-collection: publicheartrate
+      x-owner: core-sensing-squad
+    MultiDocumentResponse_EnhancedTagModel_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/EnhancedTagModel'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[EnhancedTagModel]
+    PublicRingHardwareType:
+      type: string
+      enum:
+      - gen1
+      - gen2
+      - gen2m
+      - gen3
+      - gen4
+      title: PublicRingHardwareType
+      description: Possible ring hardware types.
+    PublicWorkoutSource:
+      type: string
+      enum:
+      - manual
+      - autodetected
+      - confirmed
+      - workout_heart_rate
+      title: PublicWorkoutSource
+      description: Possible workout sources.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://cloud.ouraring.com/oauth/authorize
+          tokenUrl: https://api.ouraring.com/oauth/token
+          scopes:
+            email: Email address of the user
+            personal: Personal information (gender, age, height, weight)
+            daily: Daily summaries of sleep, activity and readiness
+            heartrate: Time series heart rate for Gen 3 users
+            workout: Summaries for auto-detected and user entered workouts
+            tag: User entered tags
+            session: Guided and unguided sessions in the Oura app
+            spo2Daily: SpO2 Average recorded during sleep
+    ClientIdAuth:
+      type: apiKey
+      in: header
+      name: x-client-id
+      description: Client ID for webhook subscription endpoints. Must be used together with x-client-secret header.
+    ClientSecretAuth:
+      type: apiKey
+      in: header
+      name: x-client-secret
+      description: Client Secret for webhook subscription endpoints. Must be used together with x-client-id header.

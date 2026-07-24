@@ -1,0 +1,298 @@
+openapi: 3.0.3
+info:
+  title: Oura API Documentation Daily Activity Routes Daily Stress Routes API
+  description: "# Overview \nThe Oura API allows Oura users and partner applications to improve their user experience with Oura data.\nThis document describes the Oura API Version 2 (V2), which is the only available integration point for Oura data. The previous V1 API has been sunset.\n# Getting Started \n## What is an API?\nAn API (Application Programming Interface) allows different software applications to communicate with each other. The Oura API enables you to access your Oura Ring data programmatically.\n## Quick Start Guide\n1. Register an [API Application](https://cloud.ouraring.com/oauth/applications) and implement OAuth2\n2. **Make Your First API Call**:\n   ```\n   curl -X GET https://api.ouraring.com/v2/usercollection/personal_info \\\n   -H \"Authorization: Bearer YOUR_TOKEN_HERE\"\n   ```\n3. **Explore Data Types**:\n   - Browse the available endpoints in this documentation to discover what data you can access\n   - Each endpoint includes example requests and responses\n4. **Set Up Webhooks (Strongly Recommended)**:\n   - Webhooks are the preferred way to consume Oura data\n   - We have not had customers hit rate limits with webhooks properly implemented\n   - Make a single request for historical data when a user first connects, then use webhooks for ongoing updates\n   - Webhook notifications come approximately 30 seconds after data syncs from the mobile app\n   - [Set up webhooks](#tag/Webhook-Subscription-Routes) to receive notifications when data changes\n## Common Questions\n- **Data Delay**: Different data types sync at different times - sleep data requires users to open the Oura app, while daily activity and stress may sync in the background\n# Data Access\nIn order to access data, a registered [API Application](https://cloud.ouraring.com/oauth/applications) is required.\n API Applications are limited to **10** users before requiring approval from Oura. There is no limit once an application is approved.\n Additionally, Oura users **must provide consent** to share each data type an API Application has access to.\nAll data access requests through the Oura API require [Authentication](https://cloud.ouraring.com/docs/authentication).\nAdditionally, we recommend that Oura users keep their mobile app updated to support API access for the latest data types.\n# Authentication\nThe Oura Cloud API supports authentication through the industry-standard OAuth2 protocol. For more information, see our [Authentication instructions](https://cloud.ouraring.com/docs/authentication).\nAccess tokens must be included in the request header as follows:\n```http\nGET /v2/usercollection/personal_info HTTP/1.1\nHost: api.ouraring.com\nAuthorization: Bearer <token>\n```\nPlease note that personal access tokens were deprecated in December 2025 and are no longer available for use.\n# Oura HTTP Response Codes\n| Response Code                        | Description |\n| ------------------------------------ | - |\n| 200 OK                               | Successful Response         |\n| 400 Query Parameter Validation Error | The request contains query parameters that are invalid or incorrectly formatted. |\n| 401 Unauthorized                     | Invalid or expired authentication token. |\n| 403 Forbidden                        | The requested resource requires additional permissions or the user's Oura subscription has expired. |\n| 429 Too Many Requests                | Rate limit exceeded. See response headers for retry guidance. |\n\n## Rate Limits\nThe API enforces rate limits at two layers to ensure fair access across all applications:\n- a per-access-token limit, which throttles single-token floods, and\n- a per-application limit, which caps the aggregate traffic across all of an application's end-user tokens so one fan-out app can't dominate shared capacity.\n\nA request that trips either layer receives a `429 Too Many Requests`. The `X-RateLimit-Tier` response header identifies which layer fired.\n\nIf your application regularly approaches rate limits, [webhooks](#tag/Webhook-Subscription-Routes) are strongly recommended — most applications that implement webhooks correctly do not encounter rate limit issues.\n\n[Contact us](mailto:api-support@ouraring.com) if you expect your usage to require higher limits.\n\n## Rate Limit Response Headers\nWhen a `429 Too Many Requests` response is returned, five headers are included to guide retries. Prefer these over fixed-interval backoff:\n- **`Retry-After`** — integer seconds to wait before retrying. RFC 7231-compliant; safe to feed directly into your client's backoff logic.\n- **`X-RateLimit-Limit`** — the request ceiling for the current window.\n- **`X-RateLimit-Window`** — the rolling window length in seconds that the ceiling applies to.\n- **`X-RateLimit-Reset`** — Unix epoch (seconds) at which the window resets and quota is fully restored.\n- **`X-RateLimit-Tier`** — identifies which limit was exceeded, useful when contacting support.\n"
+  termsOfService: https://cloud.ouraring.com/legal/api-agreement
+  version: '2.0'
+  x-logo:
+    url: /v2/static/img/Oura_Logo-Developer_RBG_Black.svg
+servers:
+- url: https://api.ouraring.com
+  description: Oura API
+tags:
+- name: Daily Stress Routes
+  description: The daily stress route includes a summary of the number of minutes the user spends in high stress and high recovery each day. This is a great way to see how your stress and recovery are trending over time. Stress and recovery are mutally exclusive. E.g. one can only be stressed or recovered at any given moement - and cannot be stressed and recovered at the same time.
+  externalDocs:
+    description: Learn more about daytime stress
+    url: https://ouraring.com/blog/daytime-stress-feature
+paths:
+  /v2/usercollection/daily_stress:
+    get:
+      tags:
+      - Daily Stress Routes
+      summary: Multiple Daily Stress Documents
+      operationId: Multiple_daily_stress_Documents_v2_usercollection_daily_stress_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: next_token
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          title: Next Token
+      - name: fields
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          description: Comma-separated list of fields to include in the response, in addition to the always returned fields. Defaults to all fields if not provided.
+          title: Fields
+        description: Comma-separated list of fields to include in the response, in addition to the always returned fields. Defaults to all fields if not provided.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MultiDocumentResponse_PublicDailyStress_'
+                - $ref: '#/components/schemas/MultiDocumentResponseDict'
+                title: Response Multiple Daily Stress Documents V2 Usercollection Daily Stress Get
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/usercollection/daily_stress?start_date=2021-11-01&end_date=2021-12-01&fields=day,score'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/usercollection/daily_stress' \nparams={ \n    'start_date': '2021-11-01', \n    'end_date': '2021-12-01',\n    'fields': 'day,score' \n}\nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/usercollection/daily_stress?start_date=2021-11-01&end_date=2021-12-01&fields=day,score', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/usercollection/daily_stress?start_date=2021-11-01&end_date=2021-12-01&fields=day,score\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+  /v2/usercollection/daily_stress/{document_id}:
+    get:
+      tags:
+      - Daily Stress Routes
+      summary: Single Daily Stress Document
+      operationId: Single_daily_stress_Document_v2_usercollection_daily_stress__document_id__get
+      parameters:
+      - name: document_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Document Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDailyStress'
+        '404':
+          description: Not Found
+        '400':
+          description: Client Exception
+        '401':
+          description: Unauthorized access exception. Usually means the access token is expired, malformed or revoked.
+        '403':
+          description: Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.
+        '429':
+          description: Request Rate Limit Exceeded.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - BearerAuth: []
+      - OAuth2: []
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl --location --request GET ''https://api.ouraring.com/v2/usercollection/daily_stress/2-5daccc095220cc5493a4e9c2b681ca941e'' \
+
+          --header ''Authorization: Bearer <token>'''
+      - lang: Python
+        source: "import requests \nurl = 'https://api.ouraring.com/v2/usercollection/daily_stress/2-5daccc095220cc5493a4e9c2b681ca941e' \nheaders = { \n  'Authorization': 'Bearer <token>' \n}\nresponse = requests.request('GET', url, headers=headers, params=params) \nprint(response.text)"
+        label: Python
+      - lang: JavaScript
+        source: "var myHeaders = new Headers(); \nmyHeaders.append('Authorization', 'Bearer <token>'); \nvar requestOptions = { \n  method: 'GET', \n  headers: myHeaders, \n}; \nfetch('https://api.ouraring.com/v2/usercollection/daily_stress/2-5daccc095220cc5493a4e9c2b681ca941e', requestOptions) \n  .then(response => response.text()) \n  .then(result => console.log(result)) \n  .catch(error => console.log('error', error));"
+        label: JavaScript
+      - lang: Java
+        source: "OkHttpClient client = new OkHttpClient().newBuilder() \n  .build(); \nRequest request = new Request.Builder() \n  .url(\"https://api.ouraring.com/v2/usercollection/daily_stress/2-5daccc095220cc5493a4e9c2b681ca941e\") \n  .method(\"GET\", null) \n  .addHeader(\"Authorization\", \"Bearer <token>\") \n  .build(); \nResponse response = client.newCall(request).execute();"
+        label: Java
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PublicDailyStressSummary:
+      type: string
+      enum:
+      - restored
+      - normal
+      - stressful
+      title: PublicDailyStressSummary
+      description: Possible public daily stress summary types.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    PublicDailyStress:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          title: ''
+          description: Unique identifier of the object.
+        day:
+          $ref: '#/components/schemas/ISODate'
+          title: ''
+          description: Day that the daily stress belongs to.
+        day_summary:
+          $ref: '#/components/schemas/PublicDailyStressSummary'
+          nullable: true
+          title: ''
+          description: Stress summary of full day.
+        recovery_high:
+          type: integer
+          nullable: true
+          title: ''
+          description: Time spent in a high recovery zone (bottom quartile data) in seconds.
+        stress_high:
+          type: integer
+          nullable: true
+          title: ''
+          description: Time spent in a high stress zone (top quartile of data) in seconds.
+      type: object
+      required:
+      - id
+      - day
+      title: PublicDailyStress
+      description: Daily stress.
+      x-cloud-only: true
+      x-collection: publicdailystress
+      x-owner: wellbeing-squad
+    ISODate:
+      type: string
+    MultiDocumentResponseDict:
+      properties:
+        data:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponseDict
+    MultiDocumentResponse_PublicDailyStress_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicDailyStress'
+          type: array
+          title: Data
+        next_token:
+          type: string
+          nullable: true
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicDailyStress]
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://cloud.ouraring.com/oauth/authorize
+          tokenUrl: https://api.ouraring.com/oauth/token
+          scopes:
+            email: Email address of the user
+            personal: Personal information (gender, age, height, weight)
+            daily: Daily summaries of sleep, activity and readiness
+            heartrate: Time series heart rate for Gen 3 users
+            workout: Summaries for auto-detected and user entered workouts
+            tag: User entered tags
+            session: Guided and unguided sessions in the Oura app
+            spo2Daily: SpO2 Average recorded during sleep
+    ClientIdAuth:
+      type: apiKey
+      in: header
+      name: x-client-id
+      description: Client ID for webhook subscription endpoints. Must be used together with x-client-secret header.
+    ClientSecretAuth:
+      type: apiKey
+      in: header
+      name: x-client-secret
+      description: Client Secret for webhook subscription endpoints. Must be used together with x-client-id header.
