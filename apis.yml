@@ -7,7 +7,20 @@ description: Oura Ring is a smart ring health tracking platform that provides a 
   sleep stages, workout detection, SpO2, heart rate variability, body temperature,
   and more. The platform also supports webhooks for near real-time data updates.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: free
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Free · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/oura.png
 url: https://raw.githubusercontent.com/api-evangelist/oura/refs/heads/main/apis.yml
 created: '2026-06-13'
 modified: '2026-06-13'
@@ -22,33 +35,25 @@ tags:
 - Smart Ring
 - Biometrics
 apis:
-- aid: oura:oura-ring-api
-  name: Oura Ring API
-  description: REST API v2 for accessing Oura Ring biometric data including sleep
-    summaries, sleep stages, readiness scores, activity summaries, workouts, heart
-    rate time series, heart rate variability, SpO2, body temperature, and user tags.
-    Supports OAuth2 authorization code flow and personal access tokens, with a sandbox
-    environment for testing.
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+- aid: oura:oura-daily-activity-routes-api
+  name: Oura Ring Daily Activity Routes API
+  description: >-
+    The Daily Activity scope includes daily activity summary values and detailed activity levels. Activity
+    levels are expressed in [metabolic equivalent of task minutes](https://en.wikipedia.org/wiki/Metabolic_equivalent)
+    (MET mins). Oura tracks activity based on the movement.
   humanURL: https://cloud.ouraring.com/docs/
   baseURL: https://api.ouraring.com/v2
   tags:
-  - Health
-  - Sleep
-  - Activity
-  - Readiness
-  - Heart Rate
-  - Wearables
-  - Biometrics
+  - Daily Activity Routes
   properties:
+  - type: OpenAPI
+    url: openapi/oura-daily-activity-routes-api-openapi.yml
   - type: Documentation
     url: https://cloud.ouraring.com/docs/
   - type: Authentication
     url: https://cloud.ouraring.com/docs/authentication
   - type: Webhooks
     url: https://cloud.ouraring.com/docs/webhooks
-  - type: OpenAPI
-    url: openapi/oura-oura-ring-api-openapi.yml
   - type: JSONSchema
     url: json-schema/
   - type: Examples
@@ -57,8 +62,890 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - url: graphql/oura-graphql.md
-    type: GraphQL
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-daily-cardiovascular-age-routes-api
+  name: Oura Ring Daily Cardiovascular Age Routes API
+  description: >-
+    Cardiovascular Age is an estimate of the health of your cardiovascular system in relation to your
+    actual age. See more details [here](https://support.ouraring.com/hc/en-us/articles/28451491040019-Cardiovascular-Age).
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Daily Cardiovascular Age Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-daily-cardiovascular-age-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-daily-readiness-routes-api
+  name: Oura Ring Daily Readiness Routes API
+  description: Readiness tells how ready you are for the day.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Daily Readiness Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-daily-readiness-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-daily-resilience-routes-api
+  name: Oura Ring Daily Resilience Routes API
+  description: >-
+    Resilience is an estimate of your ability to withstand physiological stress and recover from it over
+    time.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Daily Resilience Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-daily-resilience-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-daily-sleep-routes-api
+  name: Oura Ring Daily Sleep Routes API
+  description: Sleep period is a nearly continuous, longish period of time spent lying down in bed.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Daily Sleep Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-daily-sleep-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-daily-spo2-routes-api
+  name: Oura Ring Daily Spo2 Routes API
+  description: >-
+    The Daily SpO2 (blood oxygenation) routes include daily SpO2 average. Data will only be available
+    for users with a Gen 3 Oura Ring
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Daily Spo2 Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-daily-spo2-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-daily-stress-routes-api
+  name: Oura Ring Daily Stress Routes API
+  description: >-
+    The daily stress route includes a summary of the number of minutes the user spends in high stress
+    and high recovery each day. This is a great way to see how your stress and recovery are trending over
+    time. Stress and recovery are mutally exclusive. E.g. one can only be stressed or recovered at any
+    given moement - and cannot be stressed and recovered at the same time.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Daily Stress Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-daily-stress-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-enhanced-tag-routes-api
+  name: Oura Ring Enhanced Tag Routes API
+  description: >-
+    The Enhanced Tags data scope includes tags that Oura users enter within the Oura mobile app. Enhanced
+    Tags can be added for any lifestyle choice, habit, mood change, or environmental factor an Oura user
+    wants to monitor the effects of. Enhanced Tags also contain context on a tag's start and end time,
+    whether a tag repeats daily, and comments.
+
+
+    [Learn more about how Oura users add Enhanced Tags](https://support.ouraring.com/hc/en-us/articles/360038676993-How-to-Use-Tags)
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Enhanced Tag Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-enhanced-tag-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-heart-rate-routes-api
+  name: Oura Ring Heart Rate Routes API
+  description: >-
+    The Heart Rate data scope includes time-series heart rate data throughout the day and night. Heart
+    rate is provided at 5-minute increments. For heart rate data recorded from a Session, see Sessions
+    endpoint.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Heart Rate Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-heart-rate-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-personal-info-routes-api
+  name: Oura Ring Personal Info Routes API
+  description: >-
+    The Personal Info scope includes personal information (e.g. age, email, weight, and height) about
+    the user. You can access the id on the personal_info route with any access token (no scopes are required).
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Personal Info Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-personal-info-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-rest-mode-period-routes-api
+  name: Oura Ring Rest Mode Period Routes API
+  description: >-
+    The Rest Mode scope includes information about rest mode periods. This includes the start, end time
+    and detaials of the rest mode period.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Rest Mode Period Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-rest-mode-period-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-ring-battery-level-routes-api
+  name: Oura Ring Ring Battery Level Routes API
+  description: >-
+    The Ring Battery Level Routes API from Oura Ring — 1 operation(s) for ring battery level routes.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Ring Battery Level Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-ring-battery-level-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-ring-configuration-routes-api
+  name: Oura Ring Ring Configuration Routes API
+  description: >-
+    The Ring Configuration scope includes information about the user's ring(s). This includes the model,
+    size, color, etc.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Ring Configuration Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-ring-configuration-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-sandbox-routes-api
+  name: Oura Ring Sandbox Routes API
+  description: >-
+    Fake user data that you can access without an Oura account. There is a corresponding sandbox endpoint
+    to each available data type. This is useful for testing and development purposes. The data is not
+    real and should not be used for any production purposes. The data is generated by Oura and is not
+    based on any real user data. The data is not updated in real-time and is not guaranteed to be accurate.
+    The rate limit for the sandbox endpoints is shared with your rate limit on other data endpoints.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Sandbox Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-sandbox-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-session-routes-api
+  name: Oura Ring Session Routes API
+  description: >-
+    The Sessions data scope provides information on how users engage with guided and unguided sessions
+    in the Oura app, including the user's biometric trends during the sessions.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Session Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-session-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-sleep-routes-api
+  name: Oura Ring Sleep Routes API
+  description: >-
+    Returns Oura Sleep data for the specified Oura user within a given timeframe. A user can have multiple
+    sleep periods per day.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Sleep Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-sleep-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-sleep-time-routes-api
+  name: Oura Ring Sleep Time Routes API
+  description: Recommendations for the optimal bedtime window that is calculated based on sleep data.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Sleep Time Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-sleep-time-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-tag-routes-api
+  name: Oura Ring Tag Routes API
+  description: >-
+    <span className='text-important'>**Note:** Tag is deprecated. We recommend transitioning to [Enhanced
+    Tag](#tag/Enhanced-Tag-Routes).</span>
+
+
+    ~~The Tags data scope includes tags that Oura users enter within the Oura mobile app. Tags are a growing
+    list of activities, environment factors, symptoms, emotions, and other aspects that provide broader
+    context into what's happening with users beyond the objective data generated by the Oura Ring.~~
+
+
+    ~~[More information on tag translations](https://cloud.ouraring.com/edu/tag-translations)~~
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Tag Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-tag-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-vo2-max-routes-api
+  name: Oura Ring VO2 Max Routes API
+  description: >-
+    VO2 Max is a measure of the maximum volume of oxygen that an individual can use during intense exercise.
+    See more details [here](https://support.ouraring.com/hc/en-us/articles/28336620578835-Cardio-Capacity-VO2-Max).
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - VO2 Max Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-vo2-max-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-webhook-subscription-routes-api
+  name: Oura Ring Webhook Subscription Routes API
+  description: >-
+    # Webhooks for Real-Time Data Updates
+
+
+    ## What are Webhooks?
+
+    Webhooks are a way for the Oura API to notify your application when new data is available, instead
+    of requiring your application to constantly check for updates (polling). Think of webhooks as "reverse
+    APIs" - instead of your application requesting data, Oura's servers send data to your application
+    when something changes.
+
+
+    ## Why Use Webhooks (Important!)
+
+    - **RECOMMENDED APPROACH**: Webhooks are the preferred way to consume Oura data
+
+    - **Avoid Rate Limits**: We have not had customers hit rate limits with webhooks properly implemented
+
+    - **Near Real-Time Updates**: Webhook notifications come approximately 30 seconds after data syncs
+    from the mobile app
+
+    - **Efficient Resource Usage**: Reduces unnecessary API calls and server load
+
+    - **Better User Experience**: Your application stays updated without constant polling
+
+
+    ## How Webhooks Work with Oura
+
+    1. **You set up an endpoint**: Create a URL on your server that can receive POST requests
+
+    2. **You subscribe to events**: Tell Oura what data types and events you want to be notified about
+
+    3. **Oura verifies your endpoint**: A one-time check to ensure your endpoint is valid
+
+    4. **Oura sends notifications**: When data changes, Oura sends a POST request to your endpoint
+
+    5. **You process the event**: Your endpoint receives basic event details
+
+    6. **You fetch complete data**: Use the provided IDs to retrieve the full data via the API
+
+
+    ## Recommended Implementation Pattern
+
+    1. **Initial Data Load**: When a user first connects, make a single API request for historical data
+
+    2. **Subscribe to Webhooks**: Set up webhook subscriptions for all data types you need
+
+    3. **Process Webhook Events**: As users sync their rings, you'll receive notifications about new data
+
+    4. **Fetch Updated Data**: Use the object_id from webhook events to fetch the specific updated data
+
+
+    This pattern minimizes API calls while ensuring your application always has the latest data.
+
+
+    ## Setup Guide
+
+
+    ### Step 1: Create Your Webhook Endpoint
+
+    Set up an HTTP endpoint on your server that can:
+
+    - Handle both GET requests (for verification) and POST requests (for events)
+
+    - Respond to verification challenges during subscription setup
+
+    - Process incoming webhook events quickly (under 10 seconds)
+
+
+    Example endpoint implementation (Node.js):
+
+    ```javascript
+
+    // Express.js route handlers for your webhook endpoint
+
+    app.get('/oura-webhook', (req, res) => {
+      // Verification handler - required during subscription setup
+      const { verification_token, challenge } = req.query;
+
+      // Verify the token matches your expected token
+      if (verification_token === YOUR_VERIFICATION_TOKEN) {
+        // Return the challenge in the required format
+        return res.json({ challenge });
+      }
+
+      // If verification fails
+      return res.status(401).send('Invalid verification token');
+    });
+
+
+    app.post('/oura-webhook', (req, res) => {
+      // Event handler - processes incoming webhook events
+
+      // Always respond quickly (under 10 seconds)
+      // Process the event asynchronously if needed
+      res.status(200).send('OK');
+
+      // Then process the event data
+      const { event_type, data_type, object_id, user_id } = req.body;
+      processEventAsync(event_type, data_type, object_id, user_id);
+    });
+
+    ```
+
+
+    ### Step 2: Create a Webhook Subscription
+
+    Call the `POST /v2/webhook/subscription` endpoint to register your webhook:
+
+
+    ```
+
+    POST /v2/webhook/subscription
+
+    Headers:
+      x-client-id: YOUR_CLIENT_ID
+      x-client-secret: YOUR_CLIENT_SECRET
+      Content-Type: application/json
+
+    Body:
+
+    {
+      "callback_url": "https://your-server.com/oura-webhook",
+      "verification_token": "your-secret-verification-token",
+      "event_type": "update",
+      "data_type": "sleep"
+    }
+
+    ```
+
+
+    You need to create separate subscriptions for each combination of:
+
+    - **event_type**: The type of event (create, update, delete)
+
+    - **data_type**: The type of data you're interested in (sleep, activity, etc.)
+
+
+    ### Step 3: Verification Process
+
+    When you create a subscription, Oura verifies your endpoint:
+
+
+    1. Oura sends a GET request to your callback URL with query parameters:
+       ```
+       GET https://your-server.com/oura-webhook?verification_token=your-token&challenge=random-string
+       ```
+
+    2. Your endpoint must verify the token and respond with the challenge:
+       ```json
+       {
+         "challenge": "random-string"
+       }
+       ```
+
+    3. If verification succeeds, your subscription is activated
+
+
+    ![Verification Flow](/img/webhook-verification-flow-diagram.drawio.png)
+
+
+    ### Step 4: Receiving and Processing Events
+
+    When an event occurs (e.g., user syncs new sleep data):
+
+
+    1. Oura sends a POST request to your callback URL:
+       ```
+       POST https://your-server.com/oura-webhook
+       Headers:
+         x-oura-signature: HMAC_SIGNATURE
+         x-oura-timestamp: 1234567890
+
+       Body:
+       {
+         "event_type": "update",
+         "data_type": "sleep",
+         "object_id": "12345abc",
+         "event_time": "2023-01-01T08:00:00+00:00",
+         "user_id": "user123"
+       }
+       ```
+
+    2. Your endpoint should:
+       - Verify the signature for security (see below)
+       - Respond quickly (under 10 seconds) with a 2xx status
+       - Process the event asynchronously if needed
+       - Use the object_id to fetch the complete data via the API
+
+    ## Security Best Practices
+
+
+    ### Verify Webhook Signatures
+
+    Always verify that webhook requests are actually from Oura by checking the HMAC signature:
+
+
+    ```javascript
+
+    const crypto = require('crypto');
+
+
+    function verifySignature(headers, body, clientSecret) {
+      const signature = headers['x-oura-signature'];
+      const timestamp = headers['x-oura-timestamp'];
+
+      // Create HMAC using your client secret
+      const hmac = crypto.createHmac('sha256', clientSecret);
+      hmac.update(timestamp + JSON.stringify(body));
+      const calculatedSignature = hmac.digest('hex').toUpperCase();
+
+      // Compare calculated signature with received signature
+      return calculatedSignature === signature;
+    }
+
+
+    // In your webhook handler
+
+    app.post('/oura-webhook', (req, res) => {
+      // Verify signature
+      if (!verifySignature(req.headers, req.body, CLIENT_SECRET)) {
+        return res.status(401).send('Invalid signature');
+      }
+
+      // Process valid webhook
+      res.status(200).send('OK');
+      // ...
+    });
+
+    ```
+
+
+    ### Use HTTPS
+
+    Always use HTTPS for your webhook endpoint to ensure data is encrypted in transit.
+
+
+    ### Keep Your Verification Token Secret
+
+    Choose a strong, random verification token and don't share it.
+
+
+    ## Handling Webhook Failures
+
+
+    ### Retry Mechanism
+
+    Oura will retry failed webhook deliveries:
+
+    - For 4xx responses: 10 retries
+
+    - For 5xx responses: 10 retries
+
+    - For timeouts: 10 retries
+
+
+    ### Canceling Subscriptions
+
+    If you want to cancel a subscription, you can:
+
+    - Use the DELETE endpoint: `DELETE /v2/webhook/subscription/{id}`
+
+    - Or respond with a 410 status code to automatically cancel
+
+
+    ## Common Questions
+
+
+    ### How quickly will I receive webhooks?
+
+    Webhook notifications arrive approximately 30 seconds after data syncs from the mobile app. The timing
+    depends on the data type:
+
+    - **Sleep, Readiness, and other user-initiated sync data**: These only sync when the user opens the
+    Oura app and actively syncs their ring
+
+    - **Daily Activity, Daily Stress, and other background data**: These may update periodically in the
+    background without user action
+
+
+    ### What if my server goes down?
+
+    Oura will retry webhook deliveries for about an hour if your server doesn't respond properly. However,
+    if your server is down for an extended period, you might miss some events. It's a good practice to
+    implement a reconciliation process that can fetch data for periods when your webhook might have been
+    unavailable.
+
+
+    ### How can I test webhooks locally?
+
+    Use a tool like [ngrok](https://ngrok.com/) to expose your local development server to the internet
+    with a public URL.
+
+
+    ### Can I use the same callback URL for different subscriptions?
+
+    Yes, you can use the same URL for multiple subscriptions. Your handler can differentiate between events
+    using the `event_type` and `data_type` fields in the webhook payload.
+
+
+    ### Will I hit rate limits using webhooks?
+
+    We have not had customers hit rate limits with webhooks properly implemented. The recommended pattern
+    is:
+
+    1. Make a single request for historical data when a user first connects
+
+    2. Use webhooks for all ongoing data updates
+
+    3. Only fetch the specific data that has changed based on webhook notifications
+
+
+    This approach minimizes API calls while ensuring your application always has the latest data.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Webhook Subscription Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-webhook-subscription-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
+- aid: oura:oura-workout-routes-api
+  name: Oura Ring Workout Routes API
+  description: >-
+    The Workout data scope includes information about user workouts. This is a diverse, growing list of
+    workouts that help inform how the user is training and exercising.
+  humanURL: https://cloud.ouraring.com/docs/
+  baseURL: https://api.ouraring.com/v2
+  tags:
+  - Workout Routes
+  properties:
+  - type: OpenAPI
+    url: openapi/oura-workout-routes-api-openapi.yml
+  - type: Documentation
+    url: https://cloud.ouraring.com/docs/
+  - type: Authentication
+    url: https://cloud.ouraring.com/docs/authentication
+  - type: Webhooks
+    url: https://cloud.ouraring.com/docs/webhooks
+  - type: JSONSchema
+    url: json-schema/
+  - type: Examples
+    url: examples/
+  - type: Vocabulary
+    url: vocabulary/oura-vocabulary.yml
+  - type: JSONLDContext
+    url: json-ld/oura-context.jsonld
+  - type: GraphQL
+    url: graphql/oura-graphql.md
 common:
 - type: AgenticAccess
   url: agentic-access/oura-agentic-access.yml
