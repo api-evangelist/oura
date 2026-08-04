@@ -14,13 +14,10 @@
     },
     {
       "source": "https://www.linkedin.com/company/oura",
-      "feed_url": "https://www.linkedin.com/company/oura",
-      "title": "",
-      "saved": 0,
-      "method": "none"
+      "error": "HTTPError"
     }
   ],
   "posts": [],
-  "post_count": 14,
-  "fetched": "2026-07-11T11:50:51Z"
+  "post_count": 22,
+  "fetched": "2026-08-01T15:49:00Z"
 }
