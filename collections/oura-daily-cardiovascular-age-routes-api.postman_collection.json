@@ -1,0 +1,861 @@
+{
+  "item": [
+    {
+      "id": "f3ac2fb5-18a5-48f2-b975-b5e18835da10",
+      "name": "Daily Cardiovascular Age Routes",
+      "description": {
+        "content": "Cardiovascular Age is an estimate of the health of your cardiovascular system in relation to your actual age. See more details [here](https://support.ouraring.com/hc/en-us/articles/28451491040019-Cardiovascular-Age).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "663d87a0-3051-457c-940b-80b40ee508d6",
+          "name": "Multiple Daily Cardiovascular Age Documents",
+          "request": {
+            "name": "Multiple Daily Cardiovascular Age Documents",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "usercollection",
+                "daily_cardiovascular_age"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_date",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "end_date",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_token",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "fields",
+                  "value": "<string>",
+                  "description": "Comma-separated list of fields to include in the response, in addition to the always returned fields. Defaults to all fields if not provided."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "199445b2-c52e-4b2a-8640-deb329a7a8b2",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"day\": \"string\",\n      \"pulse_wave_velocity\": 1060.3926188336789,\n      \"vascular_age\": 3975\n    },\n    {\n      \"id\": \"string\",\n      \"day\": \"string\",\n      \"pulse_wave_velocity\": 5091.901817640828,\n      \"vascular_age\": 5312\n    }\n  ],\n  \"next_token\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "16a84c38-d8a0-41b1-a888-3107b8587dd7",
+              "name": "Client Exception",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5ce9efab-f170-4b7b-9916-9e9995c1daac",
+              "name": "Unauthorized access exception. Usually means the access token is expired, malformed or revoked.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "64c9ea3e-d8e2-4dbe-9ef2-11903d477b7d",
+              "name": "Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cba384de-7bac-4266-9874-3453e1d63fc4",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bdd97ba0-0bc8-423f-9f8f-7c9258670124",
+              "name": "Request Rate Limit Exceeded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "27fb1c38-6686-4169-b8ab-5bf8edab83dd",
+          "name": "Single Daily Cardiovascular Age Document",
+          "request": {
+            "name": "Single Daily Cardiovascular Age Document",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "usercollection",
+                "daily_cardiovascular_age",
+                ":document_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "document_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "529ad58a-d828-4ef4-9655-cd27a88f07f1",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"day\": \"string\",\n  \"pulse_wave_velocity\": 5046.027212867037,\n  \"vascular_age\": 4982\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b9a9c775-2581-4fa2-8b3d-a610d81348b9",
+              "name": "Client Exception",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b1637e46-9824-45f4-ba55-57adb700bc51",
+              "name": "Unauthorized access exception. Usually means the access token is expired, malformed or revoked.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "143f0ada-bcef-44f8-86cb-c99f7a85b962",
+              "name": "Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ba5f5acf-104d-4584-80b6-143db3ceb6b2",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "27e4b39a-d884-4e80-9afe-ae8358c5a996",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "70343fb3-ca83-4983-8f5e-67c87107be54",
+              "name": "Request Rate Limit Exceeded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "daily_cardiovascular_age",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.ouraring.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "06363789-9af1-460f-900f-c856422c9cb8",
+    "name": "Oura API Documentation Daily Activity Routes Daily Cardiovascular Age Routes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Overview \nThe Oura API allows Oura users and partner applications to improve their user experience with Oura data.\nThis document describes the Oura API Version 2 (V2), which is the only available integration point for Oura data. The previous V1 API has been sunset.\n# Getting Started \n## What is an API?\nAn API (Application Programming Interface) allows different software applications to communicate with each other. The Oura API enables you to access your Oura Ring data programmatically.\n## Quick Start Guide\n1. Register an [API Application](https://cloud.ouraring.com/oauth/applications) and implement OAuth2\n2. **Make Your First API Call**:\n   ```\n   curl -X GET https://api.ouraring.com/v2/usercollection/personal_info \\\n   -H \"Authorization: Bearer YOUR_TOKEN_HERE\"\n   ```\n3. **Explore Data Types**:\n   - Browse the available endpoints in this documentation to discover what data you can access\n   - Each endpoint includes example requests and responses\n4. **Set Up Webhooks (Strongly Recommended)**:\n   - Webhooks are the preferred way to consume Oura data\n   - We have not had customers hit rate limits with webhooks properly implemented\n   - Make a single request for historical data when a user first connects, then use webhooks for ongoing updates\n   - Webhook notifications come approximately 30 seconds after data syncs from the mobile app\n   - [Set up webhooks](#tag/Webhook-Subscription-Routes) to receive notifications when data changes\n## Common Questions\n- **Data Delay**: Different data types sync at different times - sleep data requires users to open the Oura app, while daily activity and stress may sync in the background\n# Data Access\nIn order to access data, a registered [API Application](https://cloud.ouraring.com/oauth/applications) is required.\n API Applications are limited to **10** users before requiring approval from Oura. There is no limit once an application is approved.\n Additionally, Oura users **must provide consent** to share each data type an API Application has access to.\nAll data access requests through the Oura API require [Authentication](https://cloud.ouraring.com/docs/authentication).\nAdditionally, we recommend that Oura users keep their mobile app updated to support API access for the latest data types.\n# Authentication\nThe Oura Cloud API supports authentication through the industry-standard OAuth2 protocol. For more information, see our [Authentication instructions](https://cloud.ouraring.com/docs/authentication).\nAccess tokens must be included in the request header as follows:\n```http\nGET /v2/usercollection/personal_info HTTP/1.1\nHost: api.ouraring.com\nAuthorization: Bearer <token>\n```\nPlease note that personal access tokens were deprecated in December 2025 and are no longer available for use.\n# Oura HTTP Response Codes\n| Response Code                        | Description |\n| ------------------------------------ | - |\n| 200 OK                               | Successful Response         |\n| 400 Query Parameter Validation Error | The request contains query parameters that are invalid or incorrectly formatted. |\n| 401 Unauthorized                     | Invalid or expired authentication token. |\n| 403 Forbidden                        | The requested resource requires additional permissions or the user's Oura subscription has expired. |\n| 429 Too Many Requests                | Rate limit exceeded. See response headers for retry guidance. |\n\n## Rate Limits\nThe API enforces rate limits at two layers to ensure fair access across all applications:\n- a per-access-token limit, which throttles single-token floods, and\n- a per-application limit, which caps the aggregate traffic across all of an application's end-user tokens so one fan-out app can't dominate shared capacity.\n\nA request that trips either layer receives a `429 Too Many Requests`. The `X-RateLimit-Tier` response header identifies which layer fired.\n\nIf your application regularly approaches rate limits, [webhooks](#tag/Webhook-Subscription-Routes) are strongly recommended — most applications that implement webhooks correctly do not encounter rate limit issues.\n\n[Contact us](mailto:api-support@ouraring.com) if you expect your usage to require higher limits.\n\n## Rate Limit Response Headers\nWhen a `429 Too Many Requests` response is returned, five headers are included to guide retries. Prefer these over fixed-interval backoff:\n- **`Retry-After`** — integer seconds to wait before retrying. RFC 7231-compliant; safe to feed directly into your client's backoff logic.\n- **`X-RateLimit-Limit`** — the request ceiling for the current window.\n- **`X-RateLimit-Window`** — the rolling window length in seconds that the ceiling applies to.\n- **`X-RateLimit-Reset`** — Unix epoch (seconds) at which the window resets and quota is fully restored.\n- **`X-RateLimit-Tier`** — identifies which limit was exceeded, useful when contacting support.\n",
+      "type": "text/plain"
+    }
+  }
+}

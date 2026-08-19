@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Oura API Documentation Daily Activity Routes Personal Info Routes API",
+    "version": "2.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Personal Info Routes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Single Personal Info Document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.ouraring.com/v2/usercollection/personal_info",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Single Personal Info Document"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

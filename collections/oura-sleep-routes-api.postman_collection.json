@@ -1,0 +1,861 @@
+{
+  "item": [
+    {
+      "id": "fb94ea53-f06b-4bfe-a8b8-7f90cf0e26ed",
+      "name": "Sleep Routes",
+      "description": {
+        "content": "Returns Oura Sleep data for the specified Oura user within a given timeframe. A user can have multiple sleep periods per day.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4b9d4e5a-0200-41a0-8644-c835879df677",
+          "name": "Multiple Sleep Documents",
+          "request": {
+            "name": "Multiple Sleep Documents",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "usercollection",
+                "sleep"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_date",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "end_date",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_token",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "fields",
+                  "value": "<string>",
+                  "description": "Comma-separated list of fields to include in the response, in addition to the always returned fields. Defaults to all fields if not provided."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6b67db8d-f5de-4253-b057-bd73c4fd301f",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"bedtime_end\": \"string\",\n      \"bedtime_start\": \"string\",\n      \"day\": \"string\",\n      \"low_battery_alert\": true,\n      \"period\": 7127,\n      \"time_in_bed\": 1539,\n      \"average_breath\": 752.8100078483747,\n      \"average_heart_rate\": 9667.155718095968,\n      \"average_hrv\": 1266,\n      \"awake_time\": 1374,\n      \"deep_sleep_duration\": 7535,\n      \"efficiency\": 7866,\n      \"heart_rate\": {\n        \"interval\": 7907.073836132038,\n        \"items\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"timestamp\": \"string\"\n      },\n      \"hrv\": {\n        \"interval\": 3246.3721549378433,\n        \"items\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"timestamp\": \"string\"\n      },\n      \"latency\": 5191,\n      \"light_sleep_duration\": 1190,\n      \"lowest_heart_rate\": 5149,\n      \"movement_30_sec\": \"string\",\n      \"readiness\": {\n        \"contributors\": {\n          \"activity_balance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"body_temperature\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"hrv_balance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"previous_day_activity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"previous_night\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"recovery_index\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"resting_heart_rate\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sleep_balance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sleep_regularity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"score\": 2732,\n        \"temperature_deviation\": 8207.819964460134,\n        \"temperature_trend_deviation\": 5335.609482657128\n      },\n      \"readiness_score_delta\": 719,\n      \"rem_sleep_duration\": 8734,\n      \"restless_periods\": 8872,\n      \"sleep_algorithm_version\": \"v1\",\n      \"sleep_analysis_reason\": \"bedtime_edit\",\n      \"sleep_phase_30_sec\": \"string\",\n      \"sleep_phase_5_min\": \"string\",\n      \"sleep_score_delta\": 6306,\n      \"total_sleep_duration\": 8747,\n      \"type\": \"late_nap\",\n      \"ring_id\": \"string\",\n      \"app_sleep_phase_5_min\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"bedtime_end\": \"string\",\n      \"bedtime_start\": \"string\",\n      \"day\": \"string\",\n      \"low_battery_alert\": true,\n      \"period\": 4596,\n      \"time_in_bed\": 3467,\n      \"average_breath\": 7822.9122907912715,\n      \"average_heart_rate\": 11.982092916318354,\n      \"average_hrv\": 4619,\n      \"awake_time\": 1615,\n      \"deep_sleep_duration\": 3850,\n      \"efficiency\": 9048,\n      \"heart_rate\": {\n        \"interval\": 5216.487412212628,\n        \"items\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"timestamp\": \"string\"\n      },\n      \"hrv\": {\n        \"interval\": 261.6219840221434,\n        \"items\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"timestamp\": \"string\"\n      },\n      \"latency\": 2802,\n      \"light_sleep_duration\": 2243,\n      \"lowest_heart_rate\": 3088,\n      \"movement_30_sec\": \"string\",\n      \"readiness\": {\n        \"contributors\": {\n          \"activity_balance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"body_temperature\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"hrv_balance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"previous_day_activity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"previous_night\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"recovery_index\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"resting_heart_rate\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sleep_balance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sleep_regularity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"score\": 8714,\n        \"temperature_deviation\": 6180.782133887652,\n        \"temperature_trend_deviation\": 3878.0756252876668\n      },\n      \"readiness_score_delta\": 5230,\n      \"rem_sleep_duration\": 7923,\n      \"restless_periods\": 3313,\n      \"sleep_algorithm_version\": \"v2\",\n      \"sleep_analysis_reason\": \"bedtime_edit\",\n      \"sleep_phase_30_sec\": \"string\",\n      \"sleep_phase_5_min\": \"string\",\n      \"sleep_score_delta\": 9299,\n      \"total_sleep_duration\": 9179,\n      \"type\": \"deleted\",\n      \"ring_id\": \"string\",\n      \"app_sleep_phase_5_min\": \"string\"\n    }\n  ],\n  \"next_token\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "669dd1e5-7838-4bb2-9688-b8a2e92dbaef",
+              "name": "Client Exception",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1fb59f77-113e-40eb-b087-842553526d3a",
+              "name": "Unauthorized access exception. Usually means the access token is expired, malformed or revoked.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a04cb534-c4c2-40fb-8253-f99b034cf3ce",
+              "name": "Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "beb8f4e5-c158-4ff9-953f-ad185bca2be5",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a38139e0-5381-4b73-9b7d-326cee3112f0",
+              "name": "Request Rate Limit Exceeded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "next_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4994a9ef-884e-45dd-a5f6-77bcf49c61c8",
+          "name": "Single Sleep Document",
+          "request": {
+            "name": "Single Sleep Document",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "usercollection",
+                "sleep",
+                ":document_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "document_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "837e3850-7664-4604-a731-4c041b7cbad9",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"bedtime_end\": \"string\",\n  \"bedtime_start\": \"string\",\n  \"day\": \"string\",\n  \"low_battery_alert\": false,\n  \"period\": 8830,\n  \"time_in_bed\": 3957,\n  \"average_breath\": 1734.8802220490766,\n  \"average_heart_rate\": 8505.814631144833,\n  \"average_hrv\": 902,\n  \"awake_time\": 4779,\n  \"deep_sleep_duration\": 9644,\n  \"efficiency\": 1809,\n  \"heart_rate\": {\n    \"interval\": 7550.691371325396,\n    \"items\": [\n      3909.530068042776,\n      2013.92902172975\n    ],\n    \"timestamp\": \"string\"\n  },\n  \"hrv\": {\n    \"interval\": 8783.26801643667,\n    \"items\": [\n      5088.776240903967,\n      6930.887668313946\n    ],\n    \"timestamp\": \"string\"\n  },\n  \"latency\": 4927,\n  \"light_sleep_duration\": 3645,\n  \"lowest_heart_rate\": 2220,\n  \"movement_30_sec\": \"string\",\n  \"readiness\": {\n    \"contributors\": {\n      \"activity_balance\": 4916,\n      \"body_temperature\": 3177,\n      \"hrv_balance\": 2835,\n      \"previous_day_activity\": 9535,\n      \"previous_night\": 7256,\n      \"recovery_index\": 588,\n      \"resting_heart_rate\": 89,\n      \"sleep_balance\": 367,\n      \"sleep_regularity\": 3786\n    },\n    \"score\": 478,\n    \"temperature_deviation\": 6746.113160686405,\n    \"temperature_trend_deviation\": 9516.952072746579\n  },\n  \"readiness_score_delta\": 3753,\n  \"rem_sleep_duration\": 7034,\n  \"restless_periods\": 7624,\n  \"sleep_algorithm_version\": \"v1\",\n  \"sleep_analysis_reason\": \"foreground_sleep_analysis\",\n  \"sleep_phase_30_sec\": \"string\",\n  \"sleep_phase_5_min\": \"string\",\n  \"sleep_score_delta\": 2854,\n  \"total_sleep_duration\": 4220,\n  \"type\": \"sleep\",\n  \"ring_id\": \"string\",\n  \"app_sleep_phase_5_min\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c2783a20-fa0b-4b0a-84da-7fdb19abba6a",
+              "name": "Client Exception",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a301e4a2-f399-4211-ac05-57cae8dd3077",
+              "name": "Unauthorized access exception. Usually means the access token is expired, malformed or revoked.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a8bd83c0-3449-4d53-a819-0b50c5e62435",
+              "name": "Access forbidden. Usually means the user's subscription to Oura has expired and their data is not available via the API.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7e0c90f6-ce81-4f5a-a83a-4f379fa4991b",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4ea19a65-d890-466c-b3e3-5cf73d54d917",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8201c862-8c96-4d9c-a48b-ad73af504db2",
+              "name": "Request Rate Limit Exceeded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "usercollection",
+                    "sleep",
+                    ":document_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "document_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.ouraring.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "28f42ba4-18d7-490b-972b-ce8a071a49e7",
+    "name": "Oura API Documentation Daily Activity Routes Sleep Routes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Overview \nThe Oura API allows Oura users and partner applications to improve their user experience with Oura data.\nThis document describes the Oura API Version 2 (V2), which is the only available integration point for Oura data. The previous V1 API has been sunset.\n# Getting Started \n## What is an API?\nAn API (Application Programming Interface) allows different software applications to communicate with each other. The Oura API enables you to access your Oura Ring data programmatically.\n## Quick Start Guide\n1. Register an [API Application](https://cloud.ouraring.com/oauth/applications) and implement OAuth2\n2. **Make Your First API Call**:\n   ```\n   curl -X GET https://api.ouraring.com/v2/usercollection/personal_info \\\n   -H \"Authorization: Bearer YOUR_TOKEN_HERE\"\n   ```\n3. **Explore Data Types**:\n   - Browse the available endpoints in this documentation to discover what data you can access\n   - Each endpoint includes example requests and responses\n4. **Set Up Webhooks (Strongly Recommended)**:\n   - Webhooks are the preferred way to consume Oura data\n   - We have not had customers hit rate limits with webhooks properly implemented\n   - Make a single request for historical data when a user first connects, then use webhooks for ongoing updates\n   - Webhook notifications come approximately 30 seconds after data syncs from the mobile app\n   - [Set up webhooks](#tag/Webhook-Subscription-Routes) to receive notifications when data changes\n## Common Questions\n- **Data Delay**: Different data types sync at different times - sleep data requires users to open the Oura app, while daily activity and stress may sync in the background\n# Data Access\nIn order to access data, a registered [API Application](https://cloud.ouraring.com/oauth/applications) is required.\n API Applications are limited to **10** users before requiring approval from Oura. There is no limit once an application is approved.\n Additionally, Oura users **must provide consent** to share each data type an API Application has access to.\nAll data access requests through the Oura API require [Authentication](https://cloud.ouraring.com/docs/authentication).\nAdditionally, we recommend that Oura users keep their mobile app updated to support API access for the latest data types.\n# Authentication\nThe Oura Cloud API supports authentication through the industry-standard OAuth2 protocol. For more information, see our [Authentication instructions](https://cloud.ouraring.com/docs/authentication).\nAccess tokens must be included in the request header as follows:\n```http\nGET /v2/usercollection/personal_info HTTP/1.1\nHost: api.ouraring.com\nAuthorization: Bearer <token>\n```\nPlease note that personal access tokens were deprecated in December 2025 and are no longer available for use.\n# Oura HTTP Response Codes\n| Response Code                        | Description |\n| ------------------------------------ | - |\n| 200 OK                               | Successful Response         |\n| 400 Query Parameter Validation Error | The request contains query parameters that are invalid or incorrectly formatted. |\n| 401 Unauthorized                     | Invalid or expired authentication token. |\n| 403 Forbidden                        | The requested resource requires additional permissions or the user's Oura subscription has expired. |\n| 429 Too Many Requests                | Rate limit exceeded. See response headers for retry guidance. |\n\n## Rate Limits\nThe API enforces rate limits at two layers to ensure fair access across all applications:\n- a per-access-token limit, which throttles single-token floods, and\n- a per-application limit, which caps the aggregate traffic across all of an application's end-user tokens so one fan-out app can't dominate shared capacity.\n\nA request that trips either layer receives a `429 Too Many Requests`. The `X-RateLimit-Tier` response header identifies which layer fired.\n\nIf your application regularly approaches rate limits, [webhooks](#tag/Webhook-Subscription-Routes) are strongly recommended — most applications that implement webhooks correctly do not encounter rate limit issues.\n\n[Contact us](mailto:api-support@ouraring.com) if you expect your usage to require higher limits.\n\n## Rate Limit Response Headers\nWhen a `429 Too Many Requests` response is returned, five headers are included to guide retries. Prefer these over fixed-interval backoff:\n- **`Retry-After`** — integer seconds to wait before retrying. RFC 7231-compliant; safe to feed directly into your client's backoff logic.\n- **`X-RateLimit-Limit`** — the request ceiling for the current window.\n- **`X-RateLimit-Window`** — the rolling window length in seconds that the ceiling applies to.\n- **`X-RateLimit-Reset`** — Unix epoch (seconds) at which the window resets and quota is fully restored.\n- **`X-RateLimit-Tier`** — identifies which limit was exceeded, useful when contacting support.\n",
+      "type": "text/plain"
+    }
+  }
+}
