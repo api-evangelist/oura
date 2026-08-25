@@ -9,7 +9,7 @@
       "source": "https://ouraring.com/blog/feed/",
       "feed_url": "https://ouraring.com/blog/feed/",
       "title": "",
-      "saved": 1,
+      "saved": 0,
       "method": "feed"
     },
     {
@@ -18,6 +18,6 @@
     }
   ],
   "posts": [],
-  "post_count": 24,
-  "fetched": "2026-08-15T12:11:08Z"
+  "post_count": 25,
+  "fetched": "2026-08-22T20:20:02Z"
 }
