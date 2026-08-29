@@ -7,6 +7,18 @@ description: Oura Ring is a smart ring health tracking platform that provides a 
   sleep stages, workout detection, SpO2, heart rate variability, body temperature,
   and more. The platform also supports webhooks for near real-time data updates.
 type: Index
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: free
   onboarding: self-serve
