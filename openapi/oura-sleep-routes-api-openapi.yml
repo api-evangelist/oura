@@ -1,7 +1,9 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Oura API Documentation Daily Activity Routes Sleep Routes API
-  description: "# Overview \nThe Oura API allows Oura users and partner applications to improve their user experience with Oura data.\nThis document describes the Oura API Version 2 (V2), which is the only available integration point for Oura data. The previous V1 API has been sunset.\n# Getting Started \n## What is an API?\nAn API (Application Programming Interface) allows different software applications to communicate with each other. The Oura API enables you to access your Oura Ring data programmatically.\n## Quick Start Guide\n1. Register an [API Application](https://cloud.ouraring.com/oauth/applications) and implement OAuth2\n2. **Make Your First API Call**:\n   ```\n   curl -X GET https://api.ouraring.com/v2/usercollection/personal_info \\\n   -H \"Authorization: Bearer YOUR_TOKEN_HERE\"\n   ```\n3. **Explore Data Types**:\n   - Browse the available endpoints in this documentation to discover what data you can access\n   - Each endpoint includes example requests and responses\n4. **Set Up Webhooks (Strongly Recommended)**:\n   - Webhooks are the preferred way to consume Oura data\n   - We have not had customers hit rate limits with webhooks properly implemented\n   - Make a single request for historical data when a user first connects, then use webhooks for ongoing updates\n   - Webhook notifications come approximately 30 seconds after data syncs from the mobile app\n   - [Set up webhooks](#tag/Webhook-Subscription-Routes) to receive notifications when data changes\n## Common Questions\n- **Data Delay**: Different data types sync at different times - sleep data requires users to open the Oura app, while daily activity and stress may sync in the background\n# Data Access\nIn order to access data, a registered [API Application](https://cloud.ouraring.com/oauth/applications) is required.\n API Applications are limited to **10** users before requiring approval from Oura. There is no limit once an application is approved.\n Additionally, Oura users **must provide consent** to share each data type an API Application has access to.\nAll data access requests through the Oura API require [Authentication](https://cloud.ouraring.com/docs/authentication).\nAdditionally, we recommend that Oura users keep their mobile app updated to support API access for the latest data types.\n# Authentication\nThe Oura Cloud API supports authentication through the industry-standard OAuth2 protocol. For more information, see our [Authentication instructions](https://cloud.ouraring.com/docs/authentication).\nAccess tokens must be included in the request header as follows:\n```http\nGET /v2/usercollection/personal_info HTTP/1.1\nHost: api.ouraring.com\nAuthorization: Bearer <token>\n```\nPlease note that personal access tokens were deprecated in December 2025 and are no longer available for use.\n# Oura HTTP Response Codes\n| Response Code                        | Description |\n| ------------------------------------ | - |\n| 200 OK                               | Successful Response         |\n| 400 Query Parameter Validation Error | The request contains query parameters that are invalid or incorrectly formatted. |\n| 401 Unauthorized                     | Invalid or expired authentication token. |\n| 403 Forbidden                        | The requested resource requires additional permissions or the user's Oura subscription has expired. |\n| 429 Too Many Requests                | Rate limit exceeded. See response headers for retry guidance. |\n\n## Rate Limits\nThe API enforces rate limits at two layers to ensure fair access across all applications:\n- a per-access-token limit, which throttles single-token floods, and\n- a per-application limit, which caps the aggregate traffic across all of an application's end-user tokens so one fan-out app can't dominate shared capacity.\n\nA request that trips either layer receives a `429 Too Many Requests`. The `X-RateLimit-Tier` response header identifies which layer fired.\n\nIf your application regularly approaches rate limits, [webhooks](#tag/Webhook-Subscription-Routes) are strongly recommended — most applications that implement webhooks correctly do not encounter rate limit issues.\n\n[Contact us](mailto:api-support@ouraring.com) if you expect your usage to require higher limits.\n\n## Rate Limit Response Headers\nWhen a `429 Too Many Requests` response is returned, five headers are included to guide retries. Prefer these over fixed-interval backoff:\n- **`Retry-After`** — integer seconds to wait before retrying. RFC 7231-compliant; safe to feed directly into your client's backoff logic.\n- **`X-RateLimit-Limit`** — the request ceiling for the current window.\n- **`X-RateLimit-Window`** — the rolling window length in seconds that the ceiling applies to.\n- **`X-RateLimit-Reset`** — Unix epoch (seconds) at which the window resets and quota is fully restored.\n- **`X-RateLimit-Tier`** — identifies which limit was exceeded, useful when contacting support.\n"
+  title: Oura API Documentation Sleep Routes API
+  description: '# Overview
+
+    The Oura API allows Oura users and partner applications to improve their user experience with Oura data.'
   termsOfService: https://cloud.ouraring.com/legal/api-agreement
   version: '2.0'
   x-logo:
@@ -46,15 +48,17 @@ paths:
         in: query
         required: false
         schema:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           title: Next Token
       - name: fields
         in: query
         required: false
         schema:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: Comma-separated list of fields to include in the response, in addition to the always returned fields. Defaults to all fields if not provided.
           title: Fields
         description: Comma-separated list of fields to include in the response, in addition to the always returned fields. Defaults to all fields if not provided.
@@ -156,78 +160,97 @@ paths:
         label: Java
 components:
   schemas:
-    PublicReadiness:
-      properties:
-        contributors:
-          $ref: '#/components/schemas/PublicReadinessContributors'
-          title: ''
-          description: Contributors of the readiness score.
-        score:
-          type: integer
-          nullable: true
-          title: ''
-          description: Readiness score in range [1, 100].
-        temperature_deviation:
-          type: number
-          nullable: true
-          title: ''
-          description: Temperature deviation in degrees Celsius.
-        temperature_trend_deviation:
-          type: number
-          nullable: true
-          title: ''
-          description: Temperature trend deviation in degrees Celsius.
-      type: object
-      required:
-      - contributors
-      title: PublicReadiness
-      description: Object defining readiness.
-    PublicSample:
-      properties:
-        interval:
-          type: number
-          title: ''
-          description: Interval in seconds between the sampled items.
-        items:
-          $ref: '#/components/schemas/Array_Union_float__NoneType__Bits64_'
-          title: ''
-          description: Recorded sample items.
-        timestamp:
-          $ref: '#/components/schemas/LocalizedDateTime'
-          title: ''
-          description: Timestamp when the sample recording started.
-      type: object
-      required:
-      - interval
-      - items
-      - timestamp
-      title: PublicSample
-      description: Object defining a recorded sample.
-    MultiDocumentResponse_PublicModifiedSleepModel_:
+    MultiDocumentResponseDict:
       properties:
         data:
           items:
-            $ref: '#/components/schemas/PublicModifiedSleepModel'
+            additionalProperties: true
+            type: object
           type: array
           title: Data
         next_token:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           title: Next Token
       type: object
       required:
       - data
       - next_token
-      title: MultiDocumentResponse[PublicModifiedSleepModel]
-    HTTPValidationError:
+      title: MultiDocumentResponseDict
+    Array_Union_float__NoneType__Bits64_:
+      items:
+        type:
+        - number
+        - 'null'
+      type: array
+      title: ArrayNullableFloatBits64
+    PublicReadinessContributors:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        activity_balance:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Contribution of cumulative activity balance in range [1, 100].
+        body_temperature:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Contribution of body temperature in range [1, 100].
+        hrv_balance:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Contribution of heart rate variability balance in range [1, 100].
+        previous_day_activity:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Contribution of previous day's activity in range [1, 100].
+        previous_night:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Contribution of previous night's sleep in range [1, 100].
+        recovery_index:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Contribution of recovery index in range [1, 100].
+        resting_heart_rate:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Contribution of resting heart rate in range [1, 100].
+        sleep_balance:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Contribution of sleep balance in range [1, 100].
+        sleep_regularity:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Contribution of sleep regularity in range [1, 100].
       type: object
-      title: HTTPValidationError
+      title: PublicReadinessContributors
+      description: Object defining readiness score contributors.
+    PublicSleepAnalysisReason:
+      type: string
+      enum:
+      - foreground_sleep_analysis
+      - bedtime_edit
+      title: PublicSleepAnalysisReason
+      description: Possible sleep analysis reasons.
     ValidationError:
       properties:
         loc:
@@ -249,21 +272,65 @@ components:
       - msg
       - type
       title: ValidationError
-    Array_Union_float__NoneType__Bits64_:
-      items:
-        type: number
-        nullable: true
-      type: array
-      title: ArrayNullableFloatBits64
-    PublicSleepAnalysisReason:
+    MultiDocumentResponse_PublicModifiedSleepModel_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PublicModifiedSleepModel'
+          type: array
+          title: Data
+        next_token:
+          type:
+          - string
+          - 'null'
+          title: Next Token
+      type: object
+      required:
+      - data
+      - next_token
+      title: MultiDocumentResponse[PublicModifiedSleepModel]
+    PublicSleepAlgorithmVersion:
       type: string
       enum:
-      - foreground_sleep_analysis
-      - bedtime_edit
-      title: PublicSleepAnalysisReason
-      description: Possible sleep analysis reasons.
+      - v1
+      - v2
+      title: PublicSleepAlgorithmVersion
+      description: 'Oura Sleep Staging Algorithms.
+
+        v1 = original aka legacy aka OSSA 1.0,
+
+        v2 = latest sleep algorithm'
     LocalizedDateTime:
       type: string
+    PublicReadiness:
+      properties:
+        contributors:
+          $ref: '#/components/schemas/PublicReadinessContributors'
+          title: ''
+          description: Contributors of the readiness score.
+        score:
+          type:
+          - integer
+          - 'null'
+          title: ''
+          description: Readiness score in range [1, 100].
+        temperature_deviation:
+          type:
+          - number
+          - 'null'
+          title: ''
+          description: Temperature deviation in degrees Celsius.
+        temperature_trend_deviation:
+          type:
+          - number
+          - 'null'
+          title: ''
+          description: Temperature trend deviation in degrees Celsius.
+      type: object
+      required:
+      - contributors
+      title: PublicReadiness
+      description: Object defining readiness.
     PublicSleepType:
       type: string
       enum:
@@ -284,67 +351,29 @@ components:
         ''long_sleep'' = sleep that is long enough (>3h) to automatically contribute to daily scores
 
         ''rest'' = Falsely detected sleep / nap, rejected in confirm prompt by user'
-    PublicSleepAlgorithmVersion:
+    ISODate:
       type: string
-      enum:
-      - v1
-      - v2
-      title: PublicSleepAlgorithmVersion
-      description: 'Oura Sleep Staging Algorithms.
-
-        v1 = original aka legacy aka OSSA 1.0,
-
-        v2 = latest sleep algorithm'
-    PublicReadinessContributors:
+    PublicSample:
       properties:
-        activity_balance:
-          type: integer
-          nullable: true
+        interval:
+          type: number
           title: ''
-          description: Contribution of cumulative activity balance in range [1, 100].
-        body_temperature:
-          type: integer
-          nullable: true
+          description: Interval in seconds between the sampled items.
+        items:
+          $ref: '#/components/schemas/Array_Union_float__NoneType__Bits64_'
           title: ''
-          description: Contribution of body temperature in range [1, 100].
-        hrv_balance:
-          type: integer
-          nullable: true
+          description: Recorded sample items.
+        timestamp:
+          $ref: '#/components/schemas/LocalizedDateTime'
           title: ''
-          description: Contribution of heart rate variability balance in range [1, 100].
-        previous_day_activity:
-          type: integer
-          nullable: true
-          title: ''
-          description: Contribution of previous day's activity in range [1, 100].
-        previous_night:
-          type: integer
-          nullable: true
-          title: ''
-          description: Contribution of previous night's sleep in range [1, 100].
-        recovery_index:
-          type: integer
-          nullable: true
-          title: ''
-          description: Contribution of recovery index in range [1, 100].
-        resting_heart_rate:
-          type: integer
-          nullable: true
-          title: ''
-          description: Contribution of resting heart rate in range [1, 100].
-        sleep_balance:
-          type: integer
-          nullable: true
-          title: ''
-          description: Contribution of sleep balance in range [1, 100].
-        sleep_regularity:
-          type: integer
-          nullable: true
-          title: ''
-          description: Contribution of sleep regularity in range [1, 100].
+          description: Timestamp when the sample recording started.
       type: object
-      title: PublicReadinessContributors
-      description: Object defining readiness score contributors.
+      required:
+      - interval
+      - items
+      - timestamp
+      title: PublicSample
+      description: Object defining a recorded sample.
     PublicModifiedSleepModel:
       properties:
         id:
@@ -353,23 +382,27 @@ components:
           title: ''
           description: Unique identifier of the object.
         average_breath:
-          type: number
-          nullable: true
+          type:
+          - number
+          - 'null'
           title: ''
           description: Average breathing rate during sleep as breaths/minute.
         average_heart_rate:
-          type: number
-          nullable: true
+          type:
+          - number
+          - 'null'
           title: ''
           description: 'Average heart rate during sleep as beats/minute. NOTE: this is the average calculated by ecore (based on 30-second samples) which is different from what is shown in the app. The app shows the average of aggregated 5-minute heart rate samples.'
         average_hrv:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Average heart rate variability during sleep.
         awake_time:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Duration spent awake in seconds.
         bedtime_end:
@@ -385,33 +418,35 @@ components:
           title: ''
           description: Day that the sleep belongs to.
         deep_sleep_duration:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Duration spent in deep sleep in seconds.
         efficiency:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Sleep efficiency rating in range [1, 100].
         heart_rate:
           $ref: '#/components/schemas/PublicSample'
-          nullable: true
           title: ''
           description: Object containing heart rate samples.
         hrv:
           $ref: '#/components/schemas/PublicSample'
-          nullable: true
           title: ''
           description: Object containing heart rate variability samples.
         latency:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Sleep latency in seconds. This is the time it took for the user to fall asleep after going to bed.
         light_sleep_duration:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Duration spent in light sleep in seconds.
         low_battery_alert:
@@ -419,13 +454,15 @@ components:
           title: ''
           description: Flag indicating if a low battery alert occurred.
         lowest_heart_rate:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: 'Lowest heart rate during sleep. NOTE: this is the value calculated by ecore (based on 30-second samples) which is different from what is shown in the app. The app shows the minimum of aggregated 5-minute heart rate samples.'
         movement_30_sec:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           title: ''
           description: '30-second movement classification for the period where every character corresponds to:
 
@@ -444,37 +481,38 @@ components:
           description: ECore sleep period identifier.
         readiness:
           $ref: '#/components/schemas/PublicReadiness'
-          nullable: true
           title: ''
           description: Object containing the readiness details.
         readiness_score_delta:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Effect on readiness score caused by this sleep period.
         rem_sleep_duration:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Duration spent in REM sleep in seconds.
         restless_periods:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Number of restless periods during sleep.
         sleep_algorithm_version:
           $ref: '#/components/schemas/PublicSleepAlgorithmVersion'
-          nullable: true
           title: ''
           description: Version of the sleep algorithm used to calculate the sleep data.
         sleep_analysis_reason:
           $ref: '#/components/schemas/PublicSleepAnalysisReason'
-          nullable: true
           title: ''
           description: The reason for the creation or update of the latest version of this sleep.
         sleep_phase_30_sec:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           title: ''
           description: '30-second sleep phase classification for the period where every character corresponds to:
 
@@ -488,8 +526,9 @@ components:
 
             Example: "444423323441114".'
         sleep_phase_5_min:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           title: ''
           description: '5-minute sleep phase classification for the period where every character corresponds to:
 
@@ -503,8 +542,9 @@ components:
 
             Example: "444423323441114".'
         sleep_score_delta:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Effect on sleep score caused by this sleep period.
         time_in_bed:
@@ -512,23 +552,25 @@ components:
           title: ''
           description: Duration spent in bed in seconds.
         total_sleep_duration:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           title: ''
           description: Total sleep duration in seconds.
         type:
           $ref: '#/components/schemas/PublicSleepType'
-          nullable: true
           title: ''
           description: Type of the sleep period.
         ring_id:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           title: Ring Id
           description: Encrypted identifier of the ring that produced this sleep data.
         app_sleep_phase_5_min:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           title: App Sleep Phase 5 Min
           description: "\n        5-minute sleep phase classification for the period aligned with what is shown in the app\n        where every character corresponds to:\n        '1' = deep sleep,\n        '2' = light sleep,\n        '3' = REM sleep\n        '4' = awake.\n        Example: \"444423323441114\".\n        NOTE: This field will be removed in the future after a transition period.\n        "
       type: object
@@ -544,25 +586,15 @@ components:
       x-cloud-only: true
       x-collection: publicsleepmodel
       x-owner: sleep-squad
-    ISODate:
-      type: string
-    MultiDocumentResponseDict:
+    HTTPValidationError:
       properties:
-        data:
+        detail:
           items:
-            additionalProperties: true
-            type: object
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Data
-        next_token:
-          type: string
-          nullable: true
-          title: Next Token
+          title: Detail
       type: object
-      required:
-      - data
-      - next_token
-      title: MultiDocumentResponseDict
+      title: HTTPValidationError
   securitySchemes:
     BearerAuth:
       type: http
