@@ -72,8 +72,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-daily-cardiovascular-age-routes-api
   name: Oura Ring Daily Cardiovascular Age Routes API
   description: Cardiovascular Age is an estimate of the health of your cardiovascular system in relation
@@ -99,8 +97,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-daily-readiness-routes-api
   name: Oura Ring Daily Readiness Routes API
   description: Readiness tells how ready you are for the day.
@@ -125,8 +121,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-daily-resilience-routes-api
   name: Oura Ring Daily Resilience Routes API
   description: Resilience is an estimate of your ability to withstand physiological stress and recover
@@ -152,8 +146,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-daily-sleep-routes-api
   name: Oura Ring Daily Sleep Routes API
   description: Sleep period is a nearly continuous, longish period of time spent lying down in bed.
@@ -178,8 +170,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-daily-spo2-routes-api
   name: Oura Ring Daily Spo2 Routes API
   description: The Daily SpO2 (blood oxygenation) routes include daily SpO2 average. Data will only be
@@ -205,8 +195,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-daily-stress-routes-api
   name: Oura Ring Daily Stress Routes API
   description: The daily stress route includes a summary of the number of minutes the user spends in high
@@ -234,8 +222,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-enhanced-tag-routes-api
   name: Oura Ring Enhanced Tag Routes API
   description: 'The Enhanced Tags data scope includes tags that Oura users enter within the Oura mobile
@@ -266,8 +252,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-heart-rate-routes-api
   name: Oura Ring Heart Rate Routes API
   description: The Heart Rate data scope includes time-series heart rate data throughout the day and night.
@@ -294,8 +278,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-personal-info-routes-api
   name: Oura Ring Personal Info Routes API
   description: The Personal Info scope includes personal information (e.g. age, email, weight, and height)
@@ -322,8 +304,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-rest-mode-period-routes-api
   name: Oura Ring Rest Mode Period Routes API
   description: The Rest Mode scope includes information about rest mode periods. This includes the start,
@@ -349,8 +329,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-ring-battery-level-routes-api
   name: Oura Ring Battery Level Routes API
   description: The Ring Battery Level Routes API from Oura Ring — 1 operation(s) for ring battery level
@@ -376,8 +354,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-ring-configuration-routes-api
   name: Oura Ring Configuration Routes API
   description: The Ring Configuration scope includes information about the user's ring(s). This includes
@@ -403,8 +379,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-sandbox-routes-api
   name: Oura Ring Sandbox Routes API
   description: Fake user data that you can access without an Oura account. There is a corresponding sandbox
@@ -434,8 +408,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-session-routes-api
   name: Oura Ring Session Routes API
   description: The Sessions data scope provides information on how users engage with guided and unguided
@@ -461,8 +433,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-sleep-routes-api
   name: Oura Ring Sleep Routes API
   description: Returns Oura Sleep data for the specified Oura user within a given timeframe. A user can
@@ -488,8 +458,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-sleep-time-routes-api
   name: Oura Ring Sleep Time Routes API
   description: Recommendations for the optimal bedtime window that is calculated based on sleep data.
@@ -514,8 +482,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-tag-routes-api
   name: Oura Ring Tag Routes API
   description: '<span className=''text-important''>**Note:** Tag is deprecated. We recommend transitioning
@@ -549,8 +515,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-vo2-max-routes-api
   name: Oura Ring VO2 Max Routes API
   description: VO2 Max is a measure of the maximum volume of oxygen that an individual can use during
@@ -576,8 +540,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-webhook-subscription-routes-api
   name: Oura Ring Webhook Subscription Routes API
   description: "# Webhooks for Real-Time Data Updates\n\n## What are Webhooks?\nWebhooks are a way for\
@@ -686,8 +648,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 - aid: oura:oura-workout-routes-api
   name: Oura Ring Workout Routes API
   description: The Workout data scope includes information about user workouts. This is a diverse, growing
@@ -713,8 +673,6 @@ apis:
     url: vocabulary/oura-vocabulary.yml
   - type: JSONLDContext
     url: json-ld/oura-context.jsonld
-  - type: GraphQL
-    url: graphql/oura-graphql.md
 common:
 - type: AgenticAccess
   url: agentic-access/oura-agentic-access.yml
